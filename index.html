@@ -1,6 +1,536 @@
-// ... (The entire HTML and CSS code you provided goes here) ...
+New chat
 
-    <script>
+What can I help you with today?
+Session limit reached ∙ resets 10:00 AM
+Subscribe to Max
+
+verify this code is correct and error free. I'm getting these errors on console:
+
+Code verification and error debugging - Claude
+51.05 KB •1,576 lines•Formatting may be inconsistent from source
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍹 Tiki Bar - Cocktail Recipe Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            opacity: 0.7;
+        }
+
+        .tab-btn.active {
+            background: #4ECDC4;
+            color: white;
+            opacity: 1;
+        }
+
+        .tab-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .search-bar {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .search-controls {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], textarea, select {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            width: 100%;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #4ECDC4;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #45b8b0;
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background: #ee5a52;
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #5568d3;
+        }
+
+        .results-info {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drinks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .drink-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .drink-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 5px;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-btn.favorited {
+            color: #ff6b6b;
+        }
+
+        .drink-header {
+            margin-bottom: 15px;
+            padding-right: 40px;
+        }
+
+        .drink-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .drink-category {
+            display: inline-block;
+            background: #4ECDC4;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .ingredients-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .ingredients-list li:last-child {
+            border-bottom: none;
+        }
+
+        .ingredients-list li::before {
+            content: "🍹 ";
+            margin-right: 8px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            grid-column: 1 / -1;
+        }
+
+        .no-results h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .ingredient-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .inventory-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-percentage {
+            display: inline-block;
+            background: #4ECDC4;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .match-percentage.perfect {
+            background: #51cf66;
+        }
+
+        .match-percentage.partial {
+            background: #ffa94d;
+        }
+
+        .export-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .search-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .drinks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍹 Tiki Bar</h1>
+            <p>Your Ultimate Cocktail Recipe Database</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('browse')">🔍 Browse Drinks</button>
+            <button class="tab-btn" onclick="switchTab('favorites')">❤️ Favorites</button>
+            <button class="tab-btn" onclick="switchTab('inventory')">📦 My Bar Inventory</button>
+            <button class="tab-btn" onclick="switchTab('custom')">➕ Add Custom Drink</button>
+            <button class="tab-btn" onclick="switchTab('data')">💾 Manage Data</button>
+        </div>
+
+        <!-- Browse Tab -->
+        <div id="browseTab" class="tab-content active">
+            <div class="search-bar">
+                <div class="search-controls">
+                    <input type="text" id="searchInput" placeholder="Search drinks by name or ingredient...">
+                    <div class="btn-group">
+                        <button class="btn-primary" onclick="searchDrinks()">Search</button>
+                        <button class="btn-secondary" onclick="getRandomDrink()">Random</button>
+                        <button class="btn-accent" onclick="showAllDrinks()">Show All</button>
+                    </div>
+                </div>
+                
+                <div class="filters" id="categoryFilters"></div>
+            </div>
+
+            <div class="section">
+                <h2>🧑‍🍳 Personal Bartender</h2>
+                <p style="margin-bottom: 15px; color: #666;">Enter ingredients you have or use your saved inventory:</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" id="ingredientsInput" placeholder="e.g., rum, lime juice, simple syrup" style="flex: 1; min-width: 250px;">
+                    <button class="btn-primary" onclick="findDrinksByIngredients()">Find Drinks</button>
+                    <button class="btn-secondary" onclick="useInventory()">Use My Inventory</button>
+                </div>
+            </div>
+
+            <div class="results-info" id="resultsInfo">
+                <span id="resultCount">Showing all drinks</span>
+                <span id="totalCount"></span>
+            </div>
+
+            <div class="drinks-grid" id="drinksGrid"></div>
+        </div>
+
+        <!-- Favorites Tab -->
+        <div id="favoritesTab" class="tab-content">
+            <div class="section">
+                <h2>❤️ Your Favorite Drinks</h2>
+                <p style="color: #666; margin-bottom: 20px;">Click the heart icon on any drink to add it to your favorites</p>
+            </div>
+            <div class="drinks-grid" id="favoritesGrid"></div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="inventoryTab" class="tab-content">
+            <div class="section">
+                <h2>📦 My Bar Inventory</h2>
+                <p style="color: #666; margin-bottom: 15px;">Track what ingredients you have at home</p>
+                
+                <div class="ingredient-input-group">
+                    <input type="text" id="newIngredient" placeholder="Add ingredient (e.g., Bacardi rum)">
+                    <button class="btn-primary" onclick="addToInventory()">Add</button>
+                </div>
+
+                <div class="inventory-grid" id="inventoryGrid"></div>
+            </div>
+        </div>
+
+        <!-- Custom Drinks Tab -->
+        <div id="customTab" class="tab-content">
+            <div class="section">
+                <h2>➕ Add Custom Drink</h2>
+                
+                <div class="form-group">
+                    <label>Drink Name *</label>
+                    <input type="text" id="customName" placeholder="Enter drink name">
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="customCategory">
+                        <option>Tiki Classics</option>
+                        <option>Modern Tiki</option>
+                        <option>Tiki Essentials</option>
+                        <option>Bitters Classics</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Ingredients (one per line) *</label>
+                    <textarea id="customIngredients" placeholder="e.g.,&#10;2 oz rum&#10;1 oz lime juice&#10;0.5 oz simple syrup"></textarea>
+                </div>
+
+                <button class="btn-primary" onclick="saveCustomDrink()">Save Drink</button>
+            </div>
+
+            <div class="section">
+                <h2>📝 Your Custom Drinks</h2>
+                <div class="drinks-grid" id="customDrinksGrid"></div>
+            </div>
+        </div>
+
+        <!-- Data Management Tab -->
+        <div id="dataTab" class="tab-content">
+            <div class="section">
+                <h2>💾 Export & Import Data</h2>
+                <p style="color: #666; margin-bottom: 20px;">Backup your favorites, inventory, and custom drinks</p>
+                
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="exportData()">Export All Data</button>
+                    <button class="btn-secondary" onclick="document.getElementById('importFile').click()">Import Data</button>
+                    <button class="btn-accent" onclick="clearAllData()">Clear All Data</button>
+                </div>
+                
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+
+                <div class="export-section">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">Data Summary</h3>
+                    <p>Favorites: <strong id="favCount">0</strong></p>
+                    <p>Inventory Items: <strong id="invCount">0</strong></p>
+                    <p>Custom Drinks: <strong id="customCount">0</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <script>
         // DRINK DATA - Add all your drinks from the Discord bot here
         const drinkRecipes = {
         // NOTE: I am duplicating the drinkRecipes object structure you provided
@@ -447,4 +977,626 @@
             category: 'Tiki Essentials'
         },
         'pearl-diver': {
-            name
+            name: 'Pearl Diver',
+            ingredients: [
+                '1.5 oz aged rum',
+                '0.5 oz navy strength rum',
+                '0.75 oz lime juice',
+                '0.5 oz orange juice',
+                '0.5 oz honey mix',
+                '0.25 oz butter and vanilla mix',
+                'garnish with pearl onion'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'vieux-carre': {
+            name: 'Vieux Carré',
+            ingredients: [
+                '1 oz rye whiskey',
+                '1 oz cognac',
+                '1 oz sweet vermouth',
+                '0.25 oz Bénédictine',
+                '2 dashes Peychaud\'s bitters',
+                '2 dashes Angostura bitters',
+                'stir with ice',
+                'strain over ice',
+                'garnish with lemon twist'
+            ],
+            category: 'Bitters Classics'
+        },
+        'hanky-panky': {
+            name: 'Hanky Panky',
+            ingredients: [
+                '1.5 oz gin',
+                '1.5 oz sweet vermouth',
+                '2 dashes Fernet-Branca',
+                'stir with ice',
+                'strain into chilled coupe',
+                'garnish with orange twist'
+            ],
+            category: 'Bitters Classics'
+        }
+        };
+        
+        const baseMixes = {
+            'pog-juice': {
+                name: 'POG Juice',
+                description: 'A mixture of passion fruit, orange, and guava juices.'
+            },
+            'gorilla-grog': {
+                name: 'Gorilla Grog',
+                description: 'A secret blend of exotic juices and syrups used in various Tiki recipes.'
+            },
+            'scorpion-mix': {
+                name: 'Scorpion Mix',
+                description: 'A sweet and sour mix, often containing orange and lemon juices with almond syrup.'
+            },
+            'zombie-batch': {
+                name: 'Zombie Batch',
+                description: 'A pre-mixed blend of tropical juices, spice syrups, and other secret ingredients for the classic Zombie cocktail.'
+            }
+        };
+
+        // Database using localStorage
+        const DB = {
+            get: (key) => {
+                try {
+                    const data = localStorage.getItem(key);
+                    return data ? JSON.parse(data) : null;
+                } catch(e) {
+                    console.error('Error reading from localStorage:', e);
+                    return null;
+                }
+            },
+            set: (key, value) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch(e) {
+                    console.error('Error writing to localStorage:', e);
+                    return null;
+                }
+            },
+            remove: (key) => {
+                try {
+                    localStorage.removeItem(key);
+                } catch(e) {
+                    console.error('Error removing from localStorage:', e);
+                    return null;
+                }
+            }
+        };
+
+        // Initialize data structures
+        let favorites = DB.get('favorites') || [];
+        // Note: Inventory should be an array of strings (ingredient names)
+        let inventory = DB.get('inventory') || [];
+        let customDrinks = DB.get('customDrinks') || {};
+        let currentFilter = 'all';
+        let displayedDrinks = Object.keys(drinkRecipes);
+
+        function getAllDrinks() {
+            return {...drinkRecipes, ...customDrinks};
+        }
+
+        // --- Utility Functions ---
+
+        /**
+         * Cleans and normalizes an ingredient string for comparison.
+         * Removes quantities, units, and extra notes. Converts to lower case.
+         * @param {string} ingredient - The ingredient string.
+         * @returns {string} The normalized ingredient name.
+         */
+        function normalizeIngredient(ingredient) {
+            if (!ingredient) return '';
+            // Lowercase and remove common prefixes/suffixes (oz, tsp, dash, pumps, etc.)
+            let normalized = ingredient.toLowerCase().replace(/(\d+(\.\d+)?\s*(oz|tsp|tblsp|dash(es)?|pumps)?\s*)/g, '')
+                .replace(/(\(|\)|\[|\]|,|\.)/g, '') // Remove punctuation
+                .replace(/\s(juice|rum|syrup|liqueur|grog|batch|mix|nectar|bitters|whiskey|tequila|cognac|gin|vermouth|cordial)\s*/g, ' ')
+                .trim();
+            
+            // Remove remaining common terms and extra whitespace
+            normalized = normalized.replace(/\s+/g, ' ');
+
+            // Specific word replacements/simplifications
+            if (normalized.includes('demerara')) normalized = normalized.replace('demerara', 'dark');
+            if (normalized.includes('falernum')) normalized = normalized.replace('falernum', 'falernum'); // keep falernum for now
+            if (normalized.includes('orgeat')) normalized = normalized.replace('orgeat', 'orgeat'); // keep orgeat for now
+            
+            return normalized.trim();
+        }
+
+        /**
+         * Checks if a specific ingredient (from the drink recipe) is available in the user's inventory.
+         * Uses fuzzy matching.
+         * @param {string} drinkIngredient - The ingredient string from the recipe.
+         * @param {string[]} userInventory - The user's inventory list.
+         * @returns {boolean} True if a match is found.
+         */
+        function checkIngredientAvailability(drinkIngredient, userInventory) {
+            const normalizedDrink = normalizeIngredient(drinkIngredient);
+            if (!normalizedDrink) return true; // Assume no required ingredient is available if empty
+
+            // Check against base mixes
+            const mixKeys = Object.keys(baseMixes);
+            const mixFound = mixKeys.some(key => normalizedDrink.includes(key.replace('-', ' ')));
+            if (mixFound) {
+                // Check if the mix is in the inventory
+                const mixName = baseMixes[mixKeys.find(key => normalizedDrink.includes(key.replace('-', ' ')))].name;
+                if (userInventory.some(item => normalizeIngredient(item).includes(normalizeIngredient(mixName)))) return true;
+                
+                // If the mix is a base ingredient (like POG juice) and is not in inventory, check if all mix ingredients are present.
+                // This is a simplified check: for now, only check if the mix itself is present.
+                // For a full app, you'd need the mix recipe and check those ingredients.
+            }
+
+
+            return userInventory.some(inventoryItem => {
+                const normalizedInventory = normalizeIngredient(inventoryItem);
+                
+                // Direct match check (e.g., "lime juice" vs "lime juice")
+                if (normalizedInventory === normalizedDrink) return true;
+
+                // Substring check (e.g., "Bacardi rum" vs "dark rum")
+                if (normalizedDrink.includes(normalizedInventory) || normalizedInventory.includes(normalizedDrink)) return true;
+
+                // Keyword check (e.g., "cinnamon syrup" vs "cinnamon" or "syrup")
+                const drinkParts = normalizedDrink.split(' ').filter(p => p.length > 2);
+                const inventoryParts = normalizedInventory.split(' ').filter(p => p.length > 2);
+                
+                if (drinkParts.some(d => inventoryParts.includes(d))) return true;
+
+                return false;
+            });
+        }
+
+
+        // --- UI Rendering & Logic ---
+
+        function createCategoryFilters() {
+            const allDrinks = getAllDrinks();
+            const categories = new Set();
+            Object.values(allDrinks).forEach(drink => categories.add(drink.category));
+            
+            const filterContainer = document.getElementById('categoryFilters');
+            filterContainer.innerHTML = '';
+            
+            // "All" button
+            let allBtn = document.createElement('button');
+            allBtn.className = 'filter-btn active';
+            allBtn.textContent = 'All Drinks';
+            allBtn.onclick = () => filterDrinks('all');
+            filterContainer.appendChild(allBtn);
+
+            categories.forEach(category => {
+                let btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = category;
+                btn.onclick = () => filterDrinks(category);
+                filterContainer.appendChild(btn);
+            });
+        }
+
+        function filterDrinks(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.textContent === (category === 'all' ? 'All Drinks' : category)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            const allDrinks = getAllDrinks();
+            displayedDrinks = Object.keys(allDrinks).filter(key => {
+                if (category === 'all') return true;
+                return allDrinks[key].category === category;
+            });
+            
+            renderDrinks(displayedDrinks);
+        }
+
+        function renderDrinks(drinkKeys, gridId = 'drinksGrid') {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = '';
+            const allDrinks = getAllDrinks();
+            
+            // Update Results Info
+            const resultCountSpan = document.getElementById('resultCount');
+            const totalCountSpan = document.getElementById('totalCount');
+            const total = Object.keys(allDrinks).length;
+            totalCountSpan.textContent = `Total: ${total}`;
+
+            if (drinkKeys.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <h2>No Drinks Found 😔</h2>
+                        <p>Try broadening your search or check your inventory list.</p>
+                    </div>
+                `;
+                resultCountSpan.textContent = `Showing 0 results`;
+                return;
+            }
+
+            resultCountSpan.textContent = `Showing ${drinkKeys.length} results`;
+
+
+            const userInventoryNormalized = inventory.map(normalizeIngredient);
+
+            drinkKeys.forEach(key => {
+                const drink = allDrinks[key];
+                if (!drink) return;
+                
+                const drinkCard = document.createElement('div');
+                drinkCard.className = 'drink-card';
+
+                // Check ingredient match for "Personal Bartender" feature
+                let requiredIngredients = drink.ingredients.map(i => normalizeIngredient(i)).filter(i => i);
+                let availableIngredients = 0;
+                
+                requiredIngredients.forEach(requiredIng => {
+                    if (checkIngredientAvailability(requiredIng, userInventoryNormalized)) {
+                        availableIngredients++;
+                    }
+                });
+
+                const matchPercentage = requiredIngredients.length > 0 
+                    ? Math.round((availableIngredients / requiredIngredients.length) * 100) 
+                    : 100;
+                
+                let matchClass = '';
+                if (matchPercentage === 100) matchClass = 'perfect';
+                else if (matchPercentage > 50) matchClass = 'partial';
+                
+                const matchTag = inventory.length > 0 ? 
+                    `<span class="match-percentage ${matchClass}">${matchPercentage}% Match</span>` : '';
+
+
+                const isFavorited = favorites.includes(key) ? 'favorited' : '';
+                
+                const ingredientsHtml = drink.ingredients.map(ing => `<li>${ing}</li>`).join('');
+
+                drinkCard.innerHTML = `
+                    <button class="favorite-btn ${isFavorited}" onclick="toggleFavorite('${key}', event)">
+                        ${isFavorited ? '❤️' : '🤍'}
+                    </button>
+                    <div class="drink-header">
+                        <h3 class="drink-title">${drink.name} ${matchTag}</h3>
+                        <span class="drink-category">${drink.category}</span>
+                    </div>
+                    <h4>Ingredients:</h4>
+                    <ul class="ingredients-list">
+                        ${ingredientsHtml}
+                    </ul>
+                    ${gridId === 'customDrinksGrid' ? `<button class="btn-small btn-accent" style="margin-top: 15px;" onclick="deleteCustomDrink('${key}')">Delete</button>` : ''}
+                `;
+                
+                grid.appendChild(drinkCard);
+            });
+        }
+
+        function showAllDrinks() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('ingredientsInput').value = '';
+            filterDrinks(currentFilter);
+        }
+
+        function searchDrinks() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const allDrinks = getAllDrinks();
+            
+            if (!query) {
+                showAllDrinks();
+                return;
+            }
+
+            const searchResults = Object.keys(allDrinks).filter(key => {
+                const drink = allDrinks[key];
+                // Search by name
+                if (drink.name.toLowerCase().includes(query)) return true;
+                // Search by ingredients
+                if (drink.ingredients.some(ing => normalizeIngredient(ing).includes(query))) return true;
+                return false;
+            });
+
+            renderDrinks(searchResults);
+        }
+
+        function getRandomDrink() {
+            const allDrinks = getAllDrinks();
+            const drinkKeys = Object.keys(allDrinks);
+            if (drinkKeys.length === 0) return;
+
+            const randomIndex = Math.floor(Math.random() * drinkKeys.length);
+            const randomKey = drinkKeys[randomIndex];
+
+            // Re-render only the random drink in the browse grid
+            renderDrinks([randomKey]);
+            
+            // Clear search/filter context for single-drink view clarity
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.filter-btn').classList.add('active'); // Set 'All Drinks' active
+            document.getElementById('resultCount').textContent = `Showing Random Drink`;
+        }
+
+        function findDrinksByIngredients() {
+            const input = document.getElementById('ingredientsInput').value.toLowerCase().trim();
+            if (!input && inventory.length === 0) return; // Nothing to search by
+
+            const ingredients = input ? input.split(',').map(s => normalizeIngredient(s.trim())).filter(s => s) : [];
+            const combinedInventory = [...new Set([...inventory.map(normalizeIngredient), ...ingredients])];
+            
+            if (combinedInventory.length === 0) {
+                renderDrinks([]); // If inventory and input are empty
+                return;
+            }
+
+            const allDrinks = getAllDrinks();
+            const rankedDrinks = Object.keys(allDrinks).map(key => {
+                const drink = allDrinks[key];
+                const requiredIngredients = drink.ingredients.map(normalizeIngredient).filter(i => i);
+                
+                if (requiredIngredients.length === 0) return { key, match: 0 };
+                
+                let matches = 0;
+                requiredIngredients.forEach(requiredIng => {
+                    if (checkIngredientAvailability(requiredIng, combinedInventory)) {
+                        matches++;
+                    }
+                });
+
+                const matchPercentage = Math.round((matches / requiredIngredients.length) * 100);
+                
+                return { key, match: matchPercentage };
+            }).sort((a, b) => b.match - a.match); // Sort by highest match percentage first
+
+            const matchedDrinkKeys = rankedDrinks.filter(d => d.match > 0).map(d => d.key);
+            
+            renderDrinks(matchedDrinkKeys);
+
+            // Update result count to reflect the matching logic
+            document.getElementById('resultCount').textContent = `Showing ${matchedDrinkKeys.length} matches (Best Match First)`;
+        }
+
+        function useInventory() {
+             document.getElementById('ingredientsInput').value = inventory.join(', ');
+             findDrinksByIngredients();
+        }
+
+        // --- Favorites Logic ---
+
+        function toggleFavorite(key, event) {
+            event.stopPropagation();
+            if (favorites.includes(key)) {
+                favorites = favorites.filter(k => k !== key);
+                event.target.classList.remove('favorited');
+                event.target.textContent = '🤍';
+            } else {
+                favorites.push(key);
+                event.target.classList.add('favorited');
+                event.target.textContent = '❤️';
+            }
+            DB.set('favorites', favorites);
+            updateDataSummary();
+            // If currently on the favorites tab, re-render it
+            if (document.getElementById('favoritesTab').classList.contains('active')) {
+                displayFavorites();
+            }
+        }
+
+        function displayFavorites() {
+            const favoriteDrinksKeys = favorites.filter(key => getAllDrinks().hasOwnProperty(key));
+            renderDrinks(favoriteDrinksKeys, 'favoritesGrid');
+        }
+
+        // --- Inventory Logic ---
+        
+        function renderInventory() {
+            const grid = document.getElementById('inventoryGrid');
+            grid.innerHTML = '';
+
+            if (inventory.length === 0) {
+                 grid.innerHTML = '<p style="grid-column: 1 / -1; color: #888; text-align: center;">Your bar is empty! Add your first ingredient.</p>';
+                 return;
+            }
+            
+            inventory.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'inventory-item';
+                itemDiv.innerHTML = `
+                    <span>${item}</span>
+                    <button class="btn-small btn-accent" onclick="removeFromInventory(${index})">Remove</button>
+                `;
+                grid.appendChild(itemDiv);
+            });
+        }
+
+        function addToInventory() {
+            const input = document.getElementById('newIngredient');
+            const newIngredient = input.value.trim();
+            
+            if (newIngredient && !inventory.includes(newIngredient)) {
+                inventory.push(newIngredient);
+                DB.set('inventory', inventory);
+                input.value = '';
+                renderInventory();
+                updateDataSummary();
+            }
+        }
+
+        function removeFromInventory(index) {
+            inventory.splice(index, 1);
+            DB.set('inventory', inventory);
+            renderInventory();
+            updateDataSummary();
+        }
+
+        // --- Custom Drink Logic ---
+
+        function renderCustomDrinks() {
+            const customKeys = Object.keys(customDrinks);
+            renderDrinks(customKeys, 'customDrinksGrid');
+            updateDataSummary();
+        }
+
+        function saveCustomDrink() {
+            const name = document.getElementById('customName').value.trim();
+            const category = document.getElementById('customCategory').value.trim();
+            const ingredientsText = document.getElementById('customIngredients').value.trim();
+
+            if (!name || !ingredientsText) {
+                alert('Please enter a drink name and at least one ingredient.');
+                return;
+            }
+
+            const ingredients = ingredientsText.split('\n').map(s => s.trim()).filter(s => s);
+            const key = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+
+            customDrinks[key] = {
+                name: name,
+                ingredients: ingredients,
+                category: category || 'Custom',
+                isCustom: true
+            };
+
+            DB.set('customDrinks', customDrinks);
+            // Clear form
+            document.getElementById('customName').value = '';
+            document.getElementById('customIngredients').value = '';
+
+            alert(`Custom drink "${name}" saved!`);
+            renderCustomDrinks();
+            showAllDrinks(); // Refresh the main browse view
+        }
+
+        function deleteCustomDrink(key) {
+            if (confirm(`Are you sure you want to delete the custom drink: ${customDrinks[key].name}?`)) {
+                delete customDrinks[key];
+                // Also remove from favorites if present
+                favorites = favorites.filter(k => k !== key);
+                DB.set('customDrinks', customDrinks);
+                DB.set('favorites', favorites);
+                renderCustomDrinks();
+                showAllDrinks(); // Refresh the main browse view
+            }
+        }
+
+        // --- Data Management Logic ---
+
+        function updateDataSummary() {
+            document.getElementById('favCount').textContent = favorites.length;
+            document.getElementById('invCount').textContent = inventory.length;
+            document.getElementById('customCount').textContent = Object.keys(customDrinks).length;
+        }
+
+        function exportData() {
+            const dataToExport = {
+                favorites: favorites,
+                inventory: inventory,
+                customDrinks: customDrinks
+            };
+
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = 'tiki_bar_data.json';
+
+            let linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (importedData.favorites && Array.isArray(importedData.favorites)) {
+                        favorites = importedData.favorites;
+                        DB.set('favorites', favorites);
+                    }
+                    if (importedData.inventory && Array.isArray(importedData.inventory)) {
+                        inventory = importedData.inventory;
+                        DB.set('inventory', inventory);
+                    }
+                    if (importedData.customDrinks && typeof importedData.customDrinks === 'object') {
+                        customDrinks = importedData.customDrinks;
+                        DB.set('customDrinks', customDrinks);
+                    }
+
+                    alert('Data imported successfully! Please refresh the page to ensure all tabs are updated.');
+                    init(); // Re-initialize the app state
+                } catch (error) {
+                    alert('Error importing data. Please ensure the file is a valid JSON export.');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (confirm('DANGER! Are you absolutely sure you want to clear ALL favorites, inventory, and custom drinks? This cannot be undone.')) {
+                DB.remove('favorites');
+                DB.remove('inventory');
+                DB.remove('customDrinks');
+                
+                // Reset in-memory state
+                favorites = [];
+                inventory = [];
+                customDrinks = {};
+
+                alert('All user data has been cleared.');
+                init(); // Re-initialize the app state
+            }
+        }
+
+        // --- Main Initialization ---
+
+        function init() {
+            createCategoryFilters();
+            // Determine initial display based on the active tab (which is 'browse' by default)
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab && activeTab.id === 'favoritesTab') {
+                displayFavorites();
+            } else if (activeTab && activeTab.id === 'inventoryTab') {
+                renderInventory();
+            } else if (activeTab && activeTab.id === 'customTab') {
+                renderCustomDrinks();
+            } else {
+                showAllDrinks();
+            }
+            updateDataSummary();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Re-select the button corresponding to the clicked tab, as 'event.target' isn't available here directly
+            const btn = document.querySelector(`.tab-btn[onclick*="switchTab('${tabName}')"]`);
+            if(btn) btn.classList.add('active');
+
+            const tabContent = document.getElementById(tabName + 'Tab');
+            if(tabContent) tabContent.classList.add('active');
+
+            // Logic for specific tabs
+            if (tabName === 'favorites') displayFavorites();
+            if (tabName === 'inventory') renderInventory();
+            if (tabName === 'custom') renderCustomDrinks();
+            if (tabName === 'browse') showAllDrinks();
+
+            updateDataSummary();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
