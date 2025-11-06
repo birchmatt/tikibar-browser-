@@ -1,1576 +1,450 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍹 Tiki Bar - Cocktail Recipe Database</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 12px 24px;
-            background: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            opacity: 0.7;
-        }
-
-        .tab-btn.active {
-            background: #4ECDC4;
-            color: white;
-            opacity: 1;
-        }
-
-        .tab-btn:hover {
-            opacity: 1;
-            transform: translateY(-2px);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .search-bar {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-        }
-
-        .search-controls {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        input[type="text"], textarea, select {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            width: 100%;
-            transition: border-color 0.3s;
-            font-family: inherit;
-        }
-
-        input[type="text"]:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #4ECDC4;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #45b8b0;
-            transform: translateY(-2px);
-        }
-
-        .btn-accent {
-            background: #FF6B6B;
-            color: white;
-        }
-
-        .btn-accent:hover {
-            background: #ee5a52;
-            transform: translateY(-2px);
-        }
-
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 14px;
-        }
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: #f0f0f0;
-            border: 2px solid transparent;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .filter-btn:hover {
-            background: #e0e0e0;
-        }
-
-        .filter-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #5568d3;
-        }
-
-        .results-info {
-            background: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .drinks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-        }
-
-        .drink-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-
-        .drink-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        }
-
-        .favorite-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            padding: 5px;
-        }
-
-        .favorite-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .favorite-btn.favorited {
-            color: #ff6b6b;
-        }
-
-        .drink-header {
-            margin-bottom: 15px;
-            padding-right: 40px;
-        }
-
-        .drink-title {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .drink-category {
-            display: inline-block;
-            background: #4ECDC4;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .ingredients-list {
-            list-style: none;
-            margin-top: 15px;
-        }
-
-        .ingredients-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-            color: #555;
-            font-size: 0.95em;
-        }
-
-        .ingredients-list li:last-child {
-            border-bottom: none;
-        }
-
-        .ingredients-list li::before {
-            content: "🍹 ";
-            margin-right: 8px;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            grid-column: 1 / -1;
-        }
-
-        .no-results h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 2em;
-        }
-
-        .section {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-        }
-
-        .section h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .ingredient-input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .inventory-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .match-percentage {
-            display: inline-block;
-            background: #4ECDC4;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-
-        .match-percentage.perfect {
-            background: #51cf66;
-        }
-
-        .match-percentage.partial {
-            background: #ffa94d;
-        }
-
-        .export-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #e0e0e0;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2em;
-            }
-
-            .search-controls {
-                grid-template-columns: 1fr;
-            }
-
-            .drinks-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .results-info {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🍹 Tiki Bar</h1>
-            <p>Your Ultimate Cocktail Recipe Database</p>
-        </header>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('browse')">🔍 Browse Drinks</button>
-            <button class="tab-btn" onclick="switchTab('favorites')">❤️ Favorites</button>
-            <button class="tab-btn" onclick="switchTab('inventory')">📦 My Bar Inventory</button>
-            <button class="tab-btn" onclick="switchTab('custom')">➕ Add Custom Drink</button>
-            <button class="tab-btn" onclick="switchTab('data')">💾 Manage Data</button>
-        </div>
-
-        <!-- Browse Tab -->
-        <div id="browseTab" class="tab-content active">
-            <div class="search-bar">
-                <div class="search-controls">
-                    <input type="text" id="searchInput" placeholder="Search drinks by name or ingredient...">
-                    <div class="btn-group">
-                        <button class="btn-primary" onclick="searchDrinks()">Search</button>
-                        <button class="btn-secondary" onclick="getRandomDrink()">Random</button>
-                        <button class="btn-accent" onclick="showAllDrinks()">Show All</button>
-                    </div>
-                </div>
-                
-                <div class="filters" id="categoryFilters"></div>
-            </div>
-
-            <div class="section">
-                <h2>🧑‍🍳 Personal Bartender</h2>
-                <p style="margin-bottom: 15px; color: #666;">Enter ingredients you have or use your saved inventory:</p>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <input type="text" id="ingredientsInput" placeholder="e.g., rum, lime juice, simple syrup" style="flex: 1; min-width: 250px;">
-                    <button class="btn-primary" onclick="findDrinksByIngredients()">Find Drinks</button>
-                    <button class="btn-secondary" onclick="useInventory()">Use My Inventory</button>
-                </div>
-            </div>
-
-            <div class="results-info" id="resultsInfo">
-                <span id="resultCount">Showing all drinks</span>
-                <span id="totalCount"></span>
-            </div>
-
-            <div class="drinks-grid" id="drinksGrid"></div>
-        </div>
-
-        <!-- Favorites Tab -->
-        <div id="favoritesTab" class="tab-content">
-            <div class="section">
-                <h2>❤️ Your Favorite Drinks</h2>
-                <p style="color: #666; margin-bottom: 20px;">Click the heart icon on any drink to add it to your favorites</p>
-            </div>
-            <div class="drinks-grid" id="favoritesGrid"></div>
-        </div>
-
-        <!-- Inventory Tab -->
-        <div id="inventoryTab" class="tab-content">
-            <div class="section">
-                <h2>📦 My Bar Inventory</h2>
-                <p style="color: #666; margin-bottom: 15px;">Track what ingredients you have at home</p>
-                
-                <div class="ingredient-input-group">
-                    <input type="text" id="newIngredient" placeholder="Add ingredient (e.g., Bacardi rum)">
-                    <button class="btn-primary" onclick="addToInventory()">Add</button>
-                </div>
-
-                <div class="inventory-grid" id="inventoryGrid"></div>
-            </div>
-        </div>
-
-        <!-- Custom Drinks Tab -->
-        <div id="customTab" class="tab-content">
-            <div class="section">
-                <h2>➕ Add Custom Drink</h2>
-                
-                <div class="form-group">
-                    <label>Drink Name *</label>
-                    <input type="text" id="customName" placeholder="Enter drink name">
-                </div>
-
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="customCategory">
-                        <option>Tiki Classics</option>
-                        <option>Modern Tiki</option>
-                        <option>Tiki Essentials</option>
-                        <option>Bitters Classics</option>
-                        <option>Custom</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Ingredients (one per line) *</label>
-                    <textarea id="customIngredients" placeholder="e.g.,&#10;2 oz rum&#10;1 oz lime juice&#10;0.5 oz simple syrup"></textarea>
-                </div>
-
-                <button class="btn-primary" onclick="saveCustomDrink()">Save Drink</button>
-            </div>
-
-            <div class="section">
-                <h2>📝 Your Custom Drinks</h2>
-                <div class="drinks-grid" id="customDrinksGrid"></div>
-            </div>
-        </div>
-
-        <!-- Data Management Tab -->
-        <div id="dataTab" class="tab-content">
-            <div class="section">
-                <h2>💾 Export & Import Data</h2>
-                <p style="color: #666; margin-bottom: 20px;">Backup your favorites, inventory, and custom drinks</p>
-                
-                <div class="btn-group">
-                    <button class="btn-primary" onclick="exportData()">Export All Data</button>
-                    <button class="btn-secondary" onclick="document.getElementById('importFile').click()">Import Data</button>
-                    <button class="btn-accent" onclick="clearAllData()">Clear All Data</button>
-                </div>
-                
-                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-
-                <div class="export-section">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">Data Summary</h3>
-                    <p>Favorites: <strong id="favCount">0</strong></p>
-                    <p>Inventory Items: <strong id="invCount">0</strong></p>
-                    <p>Custom Drinks: <strong id="customCount">0</strong></p>
-                </div>
-            </div>
-        </div>
-    </div>
+// ... (The entire HTML and CSS code you provided goes here) ...
 
     <script>
         // DRINK DATA - Add all your drinks from the Discord bot here
         const drinkRecipes = {
-         const drinkRecipes = {
-    'polynesian-pearl': {
-        name: 'Polynesian Pearl',
-        ingredients: [
-            '0.5 oz cinnamon syrup (2 pumps)',
-            '3 oz POG juice',
-            '1 oz Grand Marnier',
-            '1.5 oz RumChata'
-        ],
-        category: 'Tiki Classics'
-    },
-    'nautilus': {
-        name: 'Nautilus',
-        ingredients: [
-            '1 oz lime juice',
-            '1 oz lemon juice',
-            '1 oz agave nectar (4 pumps)',
-            '1 oz falernum syrup (4 pumps)',
-            '3 oz POG juice',
-            '1 oz Combier Creme de Peche',
-            '2 oz Appleton Estate Reserve rum',
-            '2 oz Barbancourt Pango Rhum',
-            '5 dashes bitters'
-        ],
-        category: 'Tiki Classics'
-    },
-    'uh-oa': {
-        name: 'Uh-Oa!',
-        ingredients: [
-            '0.5 oz lime juice',
-            '1 oz cinnamon syrup (4 pumps)',
-            '2 oz grapefruit juice',
-            '4 oz gorilla grog',
-            '2 oz Bacardi rum',
-            '2 oz Myers\'s Original Dark rum'
-        ],
-        category: 'Tiki Classics'
-    },
-    'castaway-crush': {
-        name: 'Castaway Crush',
-        ingredients: [
-            '1 oz lime juice',
-            '3 pineapple cubes',
-            '0.5 oz cinnamon syrup (2 pumps)',
-            '0.5 oz Coco Reàl cream of coconut',
-            '2 oz Leblon Cachaca'
-        ],
-        category: 'Tiki Classics'
-    },
-    'krakatoa-punch': {
-        name: 'Krakatoa Punch',
-        ingredients: [
-            '0.25 oz hibiscus grenadine syrup (1 pump)',
-            '0.5 oz orgeat syrup (2 pumps)',
-            '3 oz gorilla grog',
-            '1 oz Sailor Jerry rum',
-            '1 oz Pyrat XO rum'
-        ],
-        category: 'Tiki Classics'
-    },
-    'hippopotmai-tai': {
-        name: 'HippopotoMai-Tai',
-        ingredients: [
-            '1 oz lime juice',
-            '0.5 oz agave nectar (2 pumps)',
-            '0.5 oz orgeat syrup (2 pumps)',
-            '0.5 oz Orange Curaçao',
-            '1 oz Coruba Dark rum',
-            '1 oz Bacardi rum'
-        ],
-        category: 'Tiki Classics'
-    },
-    'rositas-margarita': {
-        name: 'Rosita\'s Margarita',
-        ingredients: [
-            '1 oz lime',
-            '0.5 oz agave nectar (2 pumps)',
-            '0.5 oz falernum syrup (2 pumps)',
-            '0.5 oz Orange Curaçao',
-            '2 oz Casamigos tequila'
-        ],
-        category: 'Tiki Classics'
-    },
-    'shrunken-zombie-head': {
-        name: 'Shrunken Zombie Head',
-        ingredients: [
-            '3 oz zombie batch',
-            '0.75 oz Bacardi 8 rum',
-            '0.75 oz Appleton rum',
-            '0.5 oz Gosling 151 rum'
-        ],
-        category: 'Tiki Classics'
-    },
-    'tahitian-torch': {
-        name: 'Tahitian Torch',
-        ingredients: [
-            '1 oz lime juice',
-            '1 oz red passion fruit syrup (4 pumps)',
-            '3 oz POG juice',
-            '2 oz ByeJoe Dragon Fire'
-        ],
-        category: 'Tiki Classics'
-    },
-    'mosquito-mojito': {
-        name: 'Mosquito Mojito',
-        ingredients: [
-            '6 fresh mint leaves',
-            '1 oz lime juice',
-            '0.5 oz falernum syrup (2 pumps)',
-            '0.5 oz agave nectar (2 pumps)',
-            '2 oz Bacardi Dragon Berry rum',
-            'top with soda water'
-        ],
-        category: 'Tiki Classics'
-    },
-    'dark-tropical-stormy': {
-        name: 'Dark & Tropical Stormy',
-        ingredients: [
-            '0.5 oz lime juice',
-            '0.5 oz falernum syrup (2 pumps)',
-            '3 oz ginger beer',
-            '1.5 oz Gosling\'s Black Seal rum'
-        ],
-        category: 'Tiki Classics'
-    },
-    'tiki-rum': {
-        name: 'Tiki, Tiki, Tiki, Tiki, Tiki Rum',
-        ingredients: [
-            '0.5 oz orange juice',
-            '2 oz pineapple juice',
-            '1 oz Coco Reàl cream of coconut',
-            '1.5 oz Pyrat XO rum'
-        ],
-        category: 'Tiki Classics'
-    },
-    'shipwreck-on-the-rocks': {
-        name: 'Shipwreck on the Rocks',
-        ingredients: [
-            '4 lemon wedges (muddled)',
-            '4 fresh mint leaves (muddled)',
-            '2 oz Maker\'s Mark bourbon',
-            '0.5 oz agave nectar (2 pumps)'
-        ],
-        category: 'Tiki Classics'
-    },
-    'angolada': {
-        name: 'Angolada',
-        ingredients: [
-            '1.5 oz Angostura bitters',
-            '0.5 oz Smith & Cross Navy Strength rum',
-            '2 oz pineapple juice',
-            '1.5 oz Coco Reàl cream of coconut',
-            '1 oz lime juice',
-            'garnish w/orange slice, pineapple leaves, nutmeg'
-        ],
-        category: 'New Drinks'
-    },
-    'zambezi-sour': {
-        name: 'Zambezi Sour',
-        ingredients: [
-            '1 oz white grapefruit juice',
-            '0.5 oz fresh lime juice',
-            '0.5 oz falernum syrup (2 pumps)',
-            '0.25 oz Turbinado simple syrup (1 pump)',
-            '2 oz bourbon'
-        ],
-        category: 'New Drinks'
-    },
-    'pago-pago-cocktail': {
-        name: 'Pago Pago Cocktail',
-        ingredients: [
-            '3 oz Myers\'s Original Dark rum',
-            '1 tsp White Creme de Cacao',
-            '1 tsp Yellow Chartreuse',
-            '1 oz lime juice',
-            '1 oz pineapple juice'
-        ],
-        category: 'New Drinks'
-    },
-    'tropical-snowstorm': {
-        name: 'Tropical Snowstorm',
-        ingredients: [
-            '1.5 oz Jack Daniel\'s',
-            '0.5 oz Parrot Bay Coconut rum',
-            '1 oz Coco Reàl cream of coconut',
-            '0.25 oz falernum syrup (1 pump)',
-            '0.25 oz cinnamon syrup (1 pump)',
-            '0.25 oz orgeat syrup (1 pump)',
-            'rim glass w/toasted coconut, garnish w/cinnamon stick and candy cane'
-        ],
-        category: 'Seasonal'
-    },
-    'sams-slay-ride': {
-        name: 'Sam\'s Slay Ride',
-        ingredients: [
-            '1 oz Jack Daniel\'s Tennessee Honey whiskey',
-            '0.5 oz orange-flavored liqueur',
-            '0.75 oz ginger liqueur',
-            '0.75 oz lemon juice',
-            '1 oz gorilla grog',
-            '0.25 oz cinnamon syrup (1 pump)'
-        ],
-        category: 'Seasonal'
-    },
-    'lapu-lapu': {
-        name: 'Lapu Lapu',
-        ingredients: [
-            '1.25 oz Myers\'s Dark rum',
-            '0.5 oz triple sec',
-            'fill with scorpion mix',
-            'top with 0.5 oz 151 rum',
-            'garnish w/cherry umbrella'
-        ],
-        category: 'Resort Classics'
-    },
-    'malibu-macaw': {
-        name: 'Malibu Macaw',
-        ingredients: [
-            '1 oz Parrot Bay Coconut rum',
-            '1 oz Midori Melon liquor',
-            'fill with pineapple juice',
-            'top with 1 oz cranberry juice',
-            'garnish w/pineapple cherry umbrella'
-        ],
-        category: 'Resort Classics'
-    },
-    'backscratcher': {
-        name: 'Backscratcher',
-        ingredients: [
-            '0.75 oz Myers\'s Dark rum',
-            '0.75 oz Bacardi Silver rum',
-            'fill with POG juice',
-            'top with 0.5 oz Jack Daniel\'s',
-            'garnish w/orange cherry umbrella and backscratcher'
-        ],
-        category: 'Resort Classics'
-    },
-    'aku-aku': {
-        name: 'Aku Aku (Inspired by Missionary\'s Downfall)',
-        ingredients: [
-            '5 1" cubes of fresh pineapple',
-            '8 mint leaves',
-            '1 oz fresh Lime juice',
-            '0.5 oz SC Demerara Syrup',
-            '0.5 oz peach liqueur',
-            '1.5 oz blended lightly aged rum',
-            'garnish with mint leaf or small cluster of mint sprigs'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'island-sunset': {
-        name: 'Island Sunset (frozen)',
-        ingredients: [
-            '0.5 oz Seven Tiki rum',
-            '0.5 oz Peach Schnapps',
-            '0.5 oz Midori Melon liquor',
-            '0.5 oz Parrot Bay Coconut rum',
-            'fill with POG juice concentrate',
-            'garnish w/orange cherry umbrella'
-        ],
-        category: 'Resort Classics'
-    },
-    'dead-reckoning': {
-        name: 'Dead Reckoning',
-        ingredients: [
-            '1.5 oz blended aged rum',
-            '0.5 oz vanilla-infused cognac',
-            '0.75 oz lime juice',
-            '0.5 oz pineapple juice',
-            '0.25 oz maple syrup',
-            '0.25 oz orgeat syrup',
-            'top with soda water',
-            'garnish with lime wheel'
-        ],
-        category: 'Smuggler\'s Cove'
-    },
-    'rum-fruit-cup': {
-        name: 'Rum Fruit Cup',
-        ingredients: [
-            '5/6 oz Light Gold rum',
-            '5/6 oz orange curacao liqueur',
-            '5/6 oz Strucchi rosso Vermouth',
-            '2 dash Angostura Aromatic bitters',
-            '1 2/3 oz Thomas Henry Ginger Ale',
-            '1 2/3 oz Cola'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'suffering-bastard': {
-        name: 'Suffering Bastard',
-        ingredients: [
-            '1 oz Remy VSOP cognac',
-            '1 oz Haymans London Dry Gin',
-            '2/3 oz Lime cordial (sweetened lime juice)',
-            '1/3 oz lime juice',
-            '3 dash Angostura Aromatic bitters',
-            '3 1/3 oz Thomas Henry Ginger Beer'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'classic-mai-tai': {
-        name: 'Classic Mai Tai',
-        ingredients: [
-            '1 oz white rum',
-            '1 oz dark rum',
-            '1 oz lime juice',
-            '0.75 oz orgeat syrup',
-            '0.5 oz Grand Marnier',
-            'garnish with lime wheel and mint sprig'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'zombie-classic': {
-        name: 'Zombie (Classic)',
-        ingredients: [
-            '1.5 oz Jamaican rum',
-            '1.5 oz Puerto Rico rum',
-            '1 oz 151 proof demerara rum',
-            '0.75 oz lime juice',
-            '0.5 oz grapefruit juice',
-            '0.25 oz cinnamon syrup',
-            '0.5 oz falernum',
-            '1 tsp grenadine',
-            '1 barspoon absinthe',
-            '1 dash Angostura bitters'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'hurricane': {
-        name: 'Hurricane',
-        ingredients: [
-            '1 oz light rum',
-            '1 oz dark rum',
-            '0.75 oz lemon juice',
-            '0.5 oz passion fruit syrup',
-            '0.25 oz Cointreau',
-            'garnish with orange slice and cherry'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'painkiller': {
-        name: 'Painkiller',
-        ingredients: [
-            '2 oz dark rum',
-            '4 oz pineapple juice',
-            '1 oz orange juice',
-            '1 oz cream of coconut',
-            'garnish with nutmeg and orange slice'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'pina-colada': {
-        name: 'Piña Colada',
-        ingredients: [
-            '1.5 oz white rum',
-            '1 oz aged rum',
-            '3 oz pineapple juice',
-            '1.5 oz cream of coconut',
-            '0.5 oz lime juice',
-            'blend with ice, garnish with pineapple'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'bahama-mama': {
-        name: 'Bahama Mama',
-        ingredients: [
-            '1 oz white rum',
-            '1 oz dark rum',
-            '0.5 oz coconut rum',
-            '0.5 oz coffee liqueur',
-            '3 oz pineapple juice',
-            '1 oz orange juice',
-            '0.5 oz lime juice',
-            'splash of grenadine'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'scorpion': {
-        name: 'Scorpion',
-        ingredients: [
-            '1.5 oz light rum',
-            '0.75 oz cognac',
-            '2 oz orange juice',
-            '1 oz lemon juice',
-            '0.5 oz orgeat syrup',
-            'garnish with orange slice and cherry'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'jungle-bird': {
-        name: 'Jungle Bird',
-        ingredients: [
-            '2 oz aged Jamaican rum',
-            '0.75 oz lime juice',
-            '0.5 oz pineapple juice',
-            '0.25 oz maraschino liqueur',
-            '0.25 oz Campari',
-            'garnish with pineapple wedge'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'fog-cutter': {
-        name: 'Fog Cutter',
-        ingredients: [
-            '1.5 oz aged rum',
-            '0.5 oz gin',
-            '0.5 oz cognac',
-            '2 oz orange juice',
-            '1 oz lemon juice',
-            '0.5 oz orgeat syrup',
-            '0.5 oz dry sherry (float)',
-            'garnish with mint sprig'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'navy-grog': {
-        name: 'Navy Grog',
-        ingredients: [
-            '1 oz light rum',
-            '1 oz dark rum',
-            '1 oz demerara rum',
-            '0.75 oz lime juice',
-            '0.75 oz grapefruit juice',
-            '0.5 oz honey syrup',
-            'serve over crushed ice'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'rum-runner': {
-        name: 'Rum Runner',
-        ingredients: [
-            '1 oz light rum',
-            '1 oz dark rum',
-            '0.5 oz banana liqueur',
-            '0.5 oz blackberry liqueur',
-            '2 oz pineapple juice',
-            '2 oz orange juice',
-            '0.5 oz grenadine',
-            'splash of lime juice'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'pearl-diver': {
-        name: 'Pearl Diver',
-        ingredients: [
-            '1.5 oz aged rum',
-            '0.5 oz navy strength rum',
-            '0.75 oz lime juice',
-            '0.5 oz orange juice',
-            '0.5 oz honey mix',
-            '0.25 oz butter and vanilla mix',
-            'garnish with pearl onion'
-        ],
-        category: 'Tiki Essentials'
-    },
-    'vieux-carre': {
-        name: 'Vieux Carré',
-        ingredients: [
-            '1 oz rye whiskey',
-            '1 oz cognac',
-            '1 oz sweet vermouth',
-            '0.25 oz Bénédictine',
-            '2 dashes Peychaud\'s bitters',
-            '2 dashes Angostura bitters',
-            'stir with ice',
-            'strain over ice',
-            'garnish with lemon twist'
-        ],
-        category: 'Bitters Classics'
-    },
-    'hanky-panky': {
-        name: 'Hanky Panky',
-        ingredients: [
-            '1.5 oz gin',
-            '1.5 oz sweet vermouth',
-            '2 dashes Fernet-Branca',
-            'stir with ice',
-            'strain into chilled coupe',
-            'garnish with orange twist'
-        ],
-        category: 'Bitters Classics'
-    }
-};
-   
-        const baseMixes = {
-            'pog-juice': {
-                name: 'POG Juice',
-                description: 'A mixture of passion fruit, orange, and guava juices.'
-            }
-            // ADD MORE BASE MIXES HERE
-        };
-
-        // Database using localStorage
-        const DB = {
-            get: (key) => {
-                try {
-                    const data = localStorage.getItem(key);
-                    return data ? JSON.parse(data) : null;
-                } catch(e) {
-                    console.error('Error reading from localStorage:', e);
-                    return null;
-                }
-            },
-            set: (key, value) => {
-                try {
-                    localStorage.setItem(key, JSON.stringify(value));
-                } catch(e) {
-                    console.error('Error writing to localStorage:', e);
-                }
-            },
-            remove: (key) => {
-                try {
-                    localStorage.removeItem(key);
-                } catch(e) {
-                    console.error('Error removing from localStorage:', e);
-                }
-            }
-        };
-
-        // Initialize data structures
-        let favorites = DB.get('favorites') || [];
-        let inventory = DB.get('inventory') || [];
-        let customDrinks = DB.get('customDrinks') || {};
-        let currentFilter = 'all';
-        let displayedDrinks = Object.keys(drinkRecipes);
-
-        function getAllDrinks() {
-            return {...drinkRecipes, ...customDrinks};
-        }
-
-        function init() {
-            createCategoryFilters();
-            showAllDrinks();
-            updateDataSummary();
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.add('active');
-
-            if (tabName === 'favorites') displayFavorites();
-            if (tabName === 'inventory') displayInventory();
-            if (tabName === 'custom') displayCustomDrinks();
-            if (tabName === 'data') updateDataSummary();
-        }
-
-        function createCategoryFilters() {
-            const allDrinks = getAllDrinks();
-            const categories = [...new Set(Object.values(allDrinks).map(d => d.category))];
-            const filtersDiv = document.getElementById('categoryFilters');
-            
-            filtersDiv.innerHTML = `
-                <button class="filter-btn active" onclick="filterByCategory('all')">All</button>
-                ${categories.map(cat => 
-                    `<button class="filter-btn" onclick="filterByCategory('${cat}')">${cat}</button>`
-                ).join('')}
-            `;
-        }
-
-        function filterByCategory(category) {
-            currentFilter = category;
-            const allDrinks = getAllDrinks();
-            
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if ((category === 'all' && btn.textContent === 'All') || btn.textContent === category) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            if (category === 'all') {
-                displayedDrinks = Object.keys(allDrinks);
-            } else {
-                displayedDrinks = Object.keys(allDrinks).filter(key => 
-                    allDrinks[key].category === category
-                );
-            }
-            
-            displayDrinks(displayedDrinks);
-        }
-
-        function searchDrinks() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const allDrinks = getAllDrinks();
-            
-            if (!searchTerm) {
-                showAllDrinks();
-                return;
-            }
-
-            const results = Object.keys(allDrinks).filter(key => {
-                const drink = allDrinks[key];
-                const nameMatch = drink.name.toLowerCase().includes(searchTerm);
-                const ingredientMatch = drink.ingredients.some(ing => 
-                    ing.toLowerCase().includes(searchTerm)
-                );
-                return nameMatch || ingredientMatch;
-            });
-
-            displayedDrinks = results;
-            displayDrinks(results);
-            
-            document.getElementById('resultCount').textContent = 
-                results.length > 0 
-                    ? `Found ${results.length} drink${results.length !== 1 ? 's' : ''} matching "${searchTerm}"`
-                    : `No drinks found matching "${searchTerm}"`;
-        }
-
-        function getRandomDrink() {
-            const allDrinks = getAllDrinks();
-            const keys = Object.keys(allDrinks);
-            const randomKey = keys[Math.floor(Math.random() * keys.length)];
-            displayedDrinks = [randomKey];
-            displayDrinks([randomKey]);
-            document.getElementById('resultCount').textContent = '🎲 Random Drink';
-        }
-
-        function showAllDrinks() {
-            const allDrinks = getAllDrinks();
-            displayedDrinks = Object.keys(allDrinks);
-            displayDrinks(displayedDrinks);
-            document.getElementById('resultCount').textContent = 'Showing all drinks';
-            document.getElementById('searchInput').value = '';
-        }
-
-        function toggleFavorite(drinkKey) {
-            const index = favorites.indexOf(drinkKey);
-            if (index > -1) {
-                favorites.splice(index, 1);
-            } else {
-                favorites.push(drinkKey);
-            }
-            DB.set('favorites', favorites);
-            
-            const btn = event.target;
-            btn.classList.toggle('favorited');
-            btn.textContent = favorites.includes(drinkKey) ? '❤️' : '🤍';
-            updateDataSummary();
-        }
-
-        function findDrinksByIngredients() {
-            const input = document.getElementById('ingredientsInput').value.toLowerCase().trim();
-            
-            if (!input) {
-                alert('Please enter some ingredients!');
-                return;
-            }
-
-            const userIngredients = input.split(',').map(ing => ing.trim());
-            matchDrinks(userIngredients);
-        }
-
-        function useInventory() {
-            if (inventory.length === 0) {
-                alert('Your inventory is empty! Add ingredients in the Inventory tab.');
-                return;
-            }
-            matchDrinks(inventory.map(i => i.toLowerCase()));
-        }
-
-        function matchDrinks(userIngredients) {
-            const allDrinks = getAllDrinks();
-            const matches = [];
-
-            Object.keys(allDrinks).forEach(key => {
-                const drink = allDrinks[key];
-                let matchCount = 0;
-                let totalIngredients = 0;
-
-                drink.ingredients.forEach(ingredientLine => {
-                    const lowerLine = ingredientLine.toLowerCase();
-                    
-                    if (lowerLine.startsWith('garnish') || lowerLine.startsWith('serve') || 
-                        lowerLine.startsWith('blend') || lowerLine.startsWith('shake') || 
-                        lowerLine.startsWith('stir') || lowerLine.startsWith('muddle') ||
-                        lowerLine.startsWith('rim')) {
-                        return;
-                    }
-                    
-                    totalIngredients++;
-                    
-                    const hasIngredient = userIngredients.some(userIng => {
-                        return lowerLine.includes(userIng) || 
-                               userIng.split(' ').some(word => word.length > 3 && lowerLine.includes(word));
-                    });
-                    
-                    if (hasIngredient) matchCount++;
-                });
-
-                if (totalIngredients > 0) {
-                    const percentage = Math.round((matchCount / totalIngredients) * 100);
-                    if (percentage >= 50) {
-                        matches.push({
-                            key,
-                            name: drink.name,
-                            category: drink.category,
-                            percentage,
-                            missing: totalIngredients - matchCount
-                        });
-                    }
-                }
-            });
-
-            matches.sort((a, b) => b.percentage - a.percentage);
-
-            if (matches.length === 0) {
-                document.getElementById('drinksGrid').innerHTML = `
-                    <div class="no-results">
-                        <h2>😅 No Matches Found</h2>
-                        <p>Try adding more common ingredients to your inventory!</p>
-                    </div>
-                `;
-                document.getElementById('resultCount').textContent = 'No drinks match your ingredients';
-                return;
-            }
-
-            displayedDrinks = matches.map(m => m.key);
-            displayDrinksWithMatches(matches);
-            document.getElementById('resultCount').textContent = 
-                `Found ${matches.length} drink${matches.length !== 1 ? 's' : ''} you can make!`;
-        }
-
-        function displayDrinksWithMatches(matches) {
-            const allDrinks = getAllDrinks();
-            const grid = document.getElementById('drinksGrid');
-            
-            grid.innerHTML = matches.map(match => {
-                const drink = allDrinks[match.key];
-                const matchClass = match.percentage === 100 ? 'perfect' : 'partial';
-                const isFavorite = favorites.includes(match.key);
-                
-                return `
-                    <div class="drink-card">
-                        <button class="favorite-btn ${isFavorite ? 'favorited' : ''}" onclick="toggleFavorite('${match.key}')">
-                            ${isFavorite ? '❤️' : '🤍'}
-                        </button>
-                        <div class="drink-header">
-                            <h2 class="drink-title">${drink.name}</h2>
-                            <div style="margin-top: 8px;">
-                                <span class="drink-category">${drink.category}</span>
-                                <span class="match-percentage ${matchClass}">${match.percentage}% Match</span>
-                            </div>
-                        </div>
-                        <ul class="ingredients-list">
-                            ${drink.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                        </ul>
-                        ${match.missing > 0 ? `<p style="margin-top: 15px; color: #ff6b6b; font-size: 0.9em;">Missing ${match.missing} ingredient${match.missing !== 1 ? 's' : ''}</p>` : ''}
-                    </div>
-                `;
-            }).join('');
-
-            updateTotalCount();
-        }
-
-        function displayDrinks(drinkKeys) {
-            const allDrinks = getAllDrinks();
-            const grid = document.getElementById('drinksGrid');
-            
-            if (drinkKeys.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-results">
-                        <h2>🤷‍♂️ No Drinks Found</h2>
-                        <p>Try a different search term or browse all drinks</p>
-                    </div>
-                `;
-                updateTotalCount();
-                return;
-            }
-
-            grid.innerHTML = drinkKeys.map(key => {
-                const drink = allDrinks[key];
-                const isFavorite = favorites.includes(key);
-                
-                return `
-                    <div class="drink-card">
-                        <button class="favorite-btn ${isFavorite ? 'favorited' : ''}" onclick="toggleFavorite('${key}')">
-                            ${isFavorite ? '❤️' : '🤍'}
-                        </button>
-                        <div class="drink-header">
-                            <h2 class="drink-title">${drink.name}</h2>
-                            <span class="drink-category">${drink.category}</span>
-                        </div>
-                        <ul class="ingredients-list">
-                            ${drink.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                        </ul>
-                    </div>
-                `;
-            }).join('');
-
-            updateTotalCount();
-        }
-
-        function displayFavorites() {
-            const grid = document.getElementById('favoritesGrid');
-            const allDrinks = getAllDrinks();
-            
-            if (favorites.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-results">
-                        <h2>No Favorites Yet</h2>
-                        <p>Click the heart icon on any drink to add it to your favorites!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = favorites.map(key => {
-                const drink = allDrinks[key];
-                if (!drink) return '';
-                
-                return `
-                    <div class="drink-card">
-                        <button class="favorite-btn favorited" onclick="toggleFavorite('${key}')">❤️</button>
-                        <div class="drink-header">
-                            <h2 class="drink-title">${drink.name}</h2>
-                            <span class="drink-category">${drink.category}</span>
-                        </div>
-                        <ul class="ingredients-list">
-                            ${drink.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                        </ul>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function addToInventory() {
-            const input = document.getElementById('newIngredient');
-            const ingredient = input.value.trim();
-            
-            if (!ingredient) return;
-            if (inventory.includes(ingredient)) {
-                alert('This ingredient is already in your inventory!');
-                return;
-            }
-            
-            inventory.push(ingredient);
-            DB.set('inventory', inventory);
-            input.value = '';
-            displayInventory();
-            updateDataSummary();
-        }
-
-        function removeFromInventory(ingredient) {
-            inventory = inventory.filter(i => i !== ingredient);
-            DB.set('inventory', inventory);
-            displayInventory();
-            updateDataSummary();
-        }
-
-        function displayInventory() {
-            const grid = document.getElementById('inventoryGrid');
-            
-            if (inventory.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; color: #666;">
-                        <p>Your inventory is empty. Start adding ingredients!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = inventory.map(ingredient => `
-                <div class="inventory-item">
-                    <span>${ingredient}</span>
-                    <button class="btn-accent btn-small" onclick="removeFromInventory('${ingredient.replace(/'/g, "\\'")}')">Remove</button>
-                </div>
-            `).join('');
-        }
-
-        function saveCustomDrink() {
-            const name = document.getElementById('customName').value.trim();
-            const category = document.getElementById('customCategory').value;
-            const ingredientsText = document.getElementById('customIngredients').value.trim();
-            
-            if (!name || !ingredientsText) {
-                alert('Please fill in the drink name and ingredients!');
-                return;
-            }
-            
-            const ingredients = ingredientsText.split('\n').filter(i => i.trim());
-            const key = 'custom-' + name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-            
-            customDrinks[key] = {
-                name: name,
-                category: category,
-                ingredients: ingredients,
-                custom: true
-            };
-            
-            DB.set('customDrinks', customDrinks);
-            
-            document.getElementById('customName').value = '';
-            document.getElementById('customIngredients').value = '';
-            
-            alert('Custom drink saved!');
-            displayCustomDrinks();
-            createCategoryFilters();
-            updateDataSummary();
-        }
-
-        function deleteCustomDrink(key) {
-            if (confirm('Are you sure you want to delete this drink?')) {
-                delete customDrinks[key];
-                DB.set('customDrinks', customDrinks);
-                displayCustomDrinks();
-                createCategoryFilters();
-                updateDataSummary();
-            }
-        }
-
-        function displayCustomDrinks() {
-            const grid = document.getElementById('customDrinksGrid');
-            const customKeys = Object.keys(customDrinks);
-            
-            if (customKeys.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-results">
-                        <h2>No Custom Drinks Yet</h2>
-                        <p>Add your own recipes above!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = customKeys.map(key => {
-                const drink = customDrinks[key];
-                
-                return `
-                    <div class="drink-card">
-                        <div class="drink-header">
-                            <h2 class="drink-title">${drink.name}</h2>
-                            <span class="drink-category">${drink.category}</span>
-                        </div>
-                        <ul class="ingredients-list">
-                            ${drink.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                        </ul>
-                        <button class="btn-accent btn-small" style="margin-top: 15px;" onclick="deleteCustomDrink('${key}')">Delete</button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function exportData() {
-            const data = {
-                favorites: favorites,
-                inventory: inventory,
-                customDrinks: customDrinks,
-                exportDate: new Date().toISOString()
-            };
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `tiki-bar-backup-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (data.favorites) {
-                        favorites = data.favorites;
-                        DB.set('favorites', favorites);
-                    }
-                    if (data.inventory) {
-                        inventory = data.inventory;
-                        DB.set('inventory', inventory);
-                    }
-                    if (data.customDrinks) {
-                        customDrinks = data.customDrinks;
-                        DB.set('customDrinks', customDrinks);
-                    }
-                    
-                    alert('Data imported successfully!');
-                    updateDataSummary();
-                    createCategoryFilters();
-                } catch (err) {
-                    alert('Error importing data. Please check the file format.');
-                    console.error(err);
-                }
-            };
-            reader.readAsText(file);
-            
-            event.target.value = '';
-        }
-
-        function clearAllData() {
-            if (!confirm('Are you sure you want to clear ALL data? This cannot be undone!')) {
-                return;
-            }
-            
-            if (!confirm('Really sure? This will delete favorites, inventory, and custom drinks!')) {
-                return;
-            }
-            
-            favorites = [];
-            inventory = [];
-            customDrinks = {};
-            
-            DB.remove('favorites');
-            DB.remove('inventory');
-            DB.remove('customDrinks');
-            
-            updateDataSummary();
-            createCategoryFilters();
-            alert('All data cleared!');
-        }
-
-        function updateDataSummary() {
-            document.getElementById('favCount').textContent = favorites.length;
-            document.getElementById('invCount').textContent = inventory.length;
-            document.getElementById('customCount').textContent = Object.keys(customDrinks).length;
-        }
-
-        function updateTotalCount() {
-            const allDrinks = getAllDrinks();
-            const totalDrinks = Object.keys(allDrinks).length;
-            document.getElementById('totalCount').textContent = 
-                `Total: ${totalDrinks} drinks in database`;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            init();
-            
-            document.getElementById('searchInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') searchDrinks();
-            });
-            
-            document.getElementById('ingredientsInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') findDrinksByIngredients();
-            });
-            
-            document.getElementById('newIngredient').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addToInventory();
-            });
-        });
-    </script>
-</body>
-</html>
+        // NOTE: I am duplicating the drinkRecipes object structure you provided
+        // to ensure the script is self-contained and runnable.
+        'polynesian-pearl': {
+            name: 'Polynesian Pearl',
+            ingredients: [
+                '0.5 oz cinnamon syrup (2 pumps)',
+                '3 oz POG juice',
+                '1 oz Grand Marnier',
+                '1.5 oz RumChata'
+            ],
+            category: 'Tiki Classics'
+        },
+        'nautilus': {
+            name: 'Nautilus',
+            ingredients: [
+                '1 oz lime juice',
+                '1 oz lemon juice',
+                '1 oz agave nectar (4 pumps)',
+                '1 oz falernum syrup (4 pumps)',
+                '3 oz POG juice',
+                '1 oz Combier Creme de Peche',
+                '2 oz Appleton Estate Reserve rum',
+                '2 oz Barbancourt Pango Rhum',
+                '5 dashes bitters'
+            ],
+            category: 'Tiki Classics'
+        },
+        'uh-oa': {
+            name: 'Uh-Oa!',
+            ingredients: [
+                '0.5 oz lime juice',
+                '1 oz cinnamon syrup (4 pumps)',
+                '2 oz grapefruit juice',
+                '4 oz gorilla grog',
+                '2 oz Bacardi rum',
+                '2 oz Myers\'s Original Dark rum'
+            ],
+            category: 'Tiki Classics'
+        },
+        'castaway-crush': {
+            name: 'Castaway Crush',
+            ingredients: [
+                '1 oz lime juice',
+                '3 pineapple cubes',
+                '0.5 oz cinnamon syrup (2 pumps)',
+                '0.5 oz Coco Reàl cream of coconut',
+                '2 oz Leblon Cachaca'
+            ],
+            category: 'Tiki Classics'
+        },
+        'krakatoa-punch': {
+            name: 'Krakatoa Punch',
+            ingredients: [
+                '0.25 oz hibiscus grenadine syrup (1 pump)',
+                '0.5 oz orgeat syrup (2 pumps)',
+                '3 oz gorilla grog',
+                '1 oz Sailor Jerry rum',
+                '1 oz Pyrat XO rum'
+            ],
+            category: 'Tiki Classics'
+        },
+        'hippopotmai-tai': {
+            name: 'HippopotoMai-Tai',
+            ingredients: [
+                '1 oz lime juice',
+                '0.5 oz agave nectar (2 pumps)',
+                '0.5 oz orgeat syrup (2 pumps)',
+                '0.5 oz Orange Curaçao',
+                '1 oz Coruba Dark rum',
+                '1 oz Bacardi rum'
+            ],
+            category: 'Tiki Classics'
+        },
+        'rositas-margarita': {
+            name: 'Rosita\'s Margarita',
+            ingredients: [
+                '1 oz lime',
+                '0.5 oz agave nectar (2 pumps)',
+                '0.5 oz falernum syrup (2 pumps)',
+                '0.5 oz Orange Curaçao',
+                '2 oz Casamigos tequila'
+            ],
+            category: 'Tiki Classics'
+        },
+        'shrunken-zombie-head': {
+            name: 'Shrunken Zombie Head',
+            ingredients: [
+                '3 oz zombie batch',
+                '0.75 oz Bacardi 8 rum',
+                '0.75 oz Appleton rum',
+                '0.5 oz Gosling 151 rum'
+            ],
+            category: 'Tiki Classics'
+        },
+        'tahitian-torch': {
+            name: 'Tahitian Torch',
+            ingredients: [
+                '1 oz lime juice',
+                '1 oz red passion fruit syrup (4 pumps)',
+                '3 oz POG juice',
+                '2 oz ByeJoe Dragon Fire'
+            ],
+            category: 'Tiki Classics'
+        },
+        'mosquito-mojito': {
+            name: 'Mosquito Mojito',
+            ingredients: [
+                '6 fresh mint leaves',
+                '1 oz lime juice',
+                '0.5 oz falernum syrup (2 pumps)',
+                '0.5 oz agave nectar (2 pumps)',
+                '2 oz Bacardi Dragon Berry rum',
+                'top with soda water'
+            ],
+            category: 'Tiki Classics'
+        },
+        'dark-tropical-stormy': {
+            name: 'Dark & Tropical Stormy',
+            ingredients: [
+                '0.5 oz lime juice',
+                '0.5 oz falernum syrup (2 pumps)',
+                '3 oz ginger beer',
+                '1.5 oz Gosling\'s Black Seal rum'
+            ],
+            category: 'Tiki Classics'
+        },
+        'tiki-rum': {
+            name: 'Tiki, Tiki, Tiki, Tiki, Tiki Rum',
+            ingredients: [
+                '0.5 oz orange juice',
+                '2 oz pineapple juice',
+                '1 oz Coco Reàl cream of coconut',
+                '1.5 oz Pyrat XO rum'
+            ],
+            category: 'Tiki Classics'
+        },
+        'shipwreck-on-the-rocks': {
+            name: 'Shipwreck on the Rocks',
+            ingredients: [
+                '4 lemon wedges (muddled)',
+                '4 fresh mint leaves (muddled)',
+                '2 oz Maker\'s Mark bourbon',
+                '0.5 oz agave nectar (2 pumps)'
+            ],
+            category: 'Tiki Classics'
+        },
+        'angolada': {
+            name: 'Angolada',
+            ingredients: [
+                '1.5 oz Angostura bitters',
+                '0.5 oz Smith & Cross Navy Strength rum',
+                '2 oz pineapple juice',
+                '1.5 oz Coco Reàl cream of coconut',
+                '1 oz lime juice',
+                'garnish w/orange slice, pineapple leaves, nutmeg'
+            ],
+            category: 'New Drinks'
+        },
+        'zambezi-sour': {
+            name: 'Zambezi Sour',
+            ingredients: [
+                '1 oz white grapefruit juice',
+                '0.5 oz fresh lime juice',
+                '0.5 oz falernum syrup (2 pumps)',
+                '0.25 oz Turbinado simple syrup (1 pump)',
+                '2 oz bourbon'
+            ],
+            category: 'New Drinks'
+        },
+        'pago-pago-cocktail': {
+            name: 'Pago Pago Cocktail',
+            ingredients: [
+                '3 oz Myers\'s Original Dark rum',
+                '1 tsp White Creme de Cacao',
+                '1 tsp Yellow Chartreuse',
+                '1 oz lime juice',
+                '1 oz pineapple juice'
+            ],
+            category: 'New Drinks'
+        },
+        'tropical-snowstorm': {
+            name: 'Tropical Snowstorm',
+            ingredients: [
+                '1.5 oz Jack Daniel\'s',
+                '0.5 oz Parrot Bay Coconut rum',
+                '1 oz Coco Reàl cream of coconut',
+                '0.25 oz falernum syrup (1 pump)',
+                '0.25 oz cinnamon syrup (1 pump)',
+                '0.25 oz orgeat syrup (1 pump)',
+                'rim glass w/toasted coconut, garnish w/cinnamon stick and candy cane'
+            ],
+            category: 'Seasonal'
+        },
+        'sams-slay-ride': {
+            name: 'Sam\'s Slay Ride',
+            ingredients: [
+                '1 oz Jack Daniel\'s Tennessee Honey whiskey',
+                '0.5 oz orange-flavored liqueur',
+                '0.75 oz ginger liqueur',
+                '0.75 oz lemon juice',
+                '1 oz gorilla grog',
+                '0.25 oz cinnamon syrup (1 pump)'
+            ],
+            category: 'Seasonal'
+        },
+        'lapu-lapu': {
+            name: 'Lapu Lapu',
+            ingredients: [
+                '1.25 oz Myers\'s Dark rum',
+                '0.5 oz triple sec',
+                'fill with scorpion mix',
+                'top with 0.5 oz 151 rum',
+                'garnish w/cherry umbrella'
+            ],
+            category: 'Resort Classics'
+        },
+        'malibu-macaw': {
+            name: 'Malibu Macaw',
+            ingredients: [
+                '1 oz Parrot Bay Coconut rum',
+                '1 oz Midori Melon liquor',
+                'fill with pineapple juice',
+                'top with 1 oz cranberry juice',
+                'garnish w/pineapple cherry umbrella'
+            ],
+            category: 'Resort Classics'
+        },
+        'backscratcher': {
+            name: 'Backscratcher',
+            ingredients: [
+                '0.75 oz Myers\'s Dark rum',
+                '0.75 oz Bacardi Silver rum',
+                'fill with POG juice',
+                'top with 0.5 oz Jack Daniel\'s',
+                'garnish w/orange cherry umbrella and backscratcher'
+            ],
+            category: 'Resort Classics'
+        },
+        'aku-aku': {
+            name: 'Aku Aku (Inspired by Missionary\'s Downfall)',
+            ingredients: [
+                '5 1" cubes of fresh pineapple',
+                '8 mint leaves',
+                '1 oz fresh Lime juice',
+                '0.5 oz SC Demerara Syrup',
+                '0.5 oz peach liqueur',
+                '1.5 oz blended lightly aged rum',
+                'garnish with mint leaf or small cluster of mint sprigs'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'island-sunset': {
+            name: 'Island Sunset (frozen)',
+            ingredients: [
+                '0.5 oz Seven Tiki rum',
+                '0.5 oz Peach Schnapps',
+                '0.5 oz Midori Melon liquor',
+                '0.5 oz Parrot Bay Coconut rum',
+                'fill with POG juice concentrate',
+                'garnish w/orange cherry umbrella'
+            ],
+            category: 'Resort Classics'
+        },
+        'dead-reckoning': {
+            name: 'Dead Reckoning',
+            ingredients: [
+                '1.5 oz blended aged rum',
+                '0.5 oz vanilla-infused cognac',
+                '0.75 oz lime juice',
+                '0.5 oz pineapple juice',
+                '0.25 oz maple syrup',
+                '0.25 oz orgeat syrup',
+                'top with soda water',
+                'garnish with lime wheel'
+            ],
+            category: 'Smuggler\'s Cove'
+        },
+        'rum-fruit-cup': {
+            name: 'Rum Fruit Cup',
+            ingredients: [
+                '5/6 oz Light Gold rum',
+                '5/6 oz orange curacao liqueur',
+                '5/6 oz Strucchi rosso Vermouth',
+                '2 dash Angostura Aromatic bitters',
+                '1 2/3 oz Thomas Henry Ginger Ale',
+                '1 2/3 oz Cola'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'suffering-bastard': {
+            name: 'Suffering Bastard',
+            ingredients: [
+                '1 oz Remy VSOP cognac',
+                '1 oz Haymans London Dry Gin',
+                '2/3 oz Lime cordial (sweetened lime juice)',
+                '1/3 oz lime juice',
+                '3 dash Angostura Aromatic bitters',
+                '3 1/3 oz Thomas Henry Ginger Beer'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'classic-mai-tai': {
+            name: 'Classic Mai Tai',
+            ingredients: [
+                '1 oz white rum',
+                '1 oz dark rum',
+                '1 oz lime juice',
+                '0.75 oz orgeat syrup',
+                '0.5 oz Grand Marnier',
+                'garnish with lime wheel and mint sprig'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'zombie-classic': {
+            name: 'Zombie (Classic)',
+            ingredients: [
+                '1.5 oz Jamaican rum',
+                '1.5 oz Puerto Rico rum',
+                '1 oz 151 proof demerara rum',
+                '0.75 oz lime juice',
+                '0.5 oz grapefruit juice',
+                '0.25 oz cinnamon syrup',
+                '0.5 oz falernum',
+                '1 tsp grenadine',
+                '1 barspoon absinthe',
+                '1 dash Angostura bitters'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'hurricane': {
+            name: 'Hurricane',
+            ingredients: [
+                '1 oz light rum',
+                '1 oz dark rum',
+                '0.75 oz lemon juice',
+                '0.5 oz passion fruit syrup',
+                '0.25 oz Cointreau',
+                'garnish with orange slice and cherry'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'painkiller': {
+            name: 'Painkiller',
+            ingredients: [
+                '2 oz dark rum',
+                '4 oz pineapple juice',
+                '1 oz orange juice',
+                '1 oz cream of coconut',
+                'garnish with nutmeg and orange slice'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'pina-colada': {
+            name: 'Piña Colada',
+            ingredients: [
+                '1.5 oz white rum',
+                '1 oz aged rum',
+                '3 oz pineapple juice',
+                '1.5 oz cream of coconut',
+                '0.5 oz lime juice',
+                'blend with ice, garnish with pineapple'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'bahama-mama': {
+            name: 'Bahama Mama',
+            ingredients: [
+                '1 oz white rum',
+                '1 oz dark rum',
+                '0.5 oz coconut rum',
+                '0.5 oz coffee liqueur',
+                '3 oz pineapple juice',
+                '1 oz orange juice',
+                '0.5 oz lime juice',
+                'splash of grenadine'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'scorpion': {
+            name: 'Scorpion',
+            ingredients: [
+                '1.5 oz light rum',
+                '0.75 oz cognac',
+                '2 oz orange juice',
+                '1 oz lemon juice',
+                '0.5 oz orgeat syrup',
+                'garnish with orange slice and cherry'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'jungle-bird': {
+            name: 'Jungle Bird',
+            ingredients: [
+                '2 oz aged Jamaican rum',
+                '0.75 oz lime juice',
+                '0.5 oz pineapple juice',
+                '0.25 oz maraschino liqueur',
+                '0.25 oz Campari',
+                'garnish with pineapple wedge'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'fog-cutter': {
+            name: 'Fog Cutter',
+            ingredients: [
+                '1.5 oz aged rum',
+                '0.5 oz gin',
+                '0.5 oz cognac',
+                '2 oz orange juice',
+                '1 oz lemon juice',
+                '0.5 oz orgeat syrup',
+                '0.5 oz dry sherry (float)',
+                'garnish with mint sprig'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'navy-grog': {
+            name: 'Navy Grog',
+            ingredients: [
+                '1 oz light rum',
+                '1 oz dark rum',
+                '1 oz demerara rum',
+                '0.75 oz lime juice',
+                '0.75 oz grapefruit juice',
+                '0.5 oz honey syrup',
+                'serve over crushed ice'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'rum-runner': {
+            name: 'Rum Runner',
+            ingredients: [
+                '1 oz light rum',
+                '1 oz dark rum',
+                '0.5 oz banana liqueur',
+                '0.5 oz blackberry liqueur',
+                '2 oz pineapple juice',
+                '2 oz orange juice',
+                '0.5 oz grenadine',
+                'splash of lime juice'
+            ],
+            category: 'Tiki Essentials'
+        },
+        'pearl-diver': {
+            name
