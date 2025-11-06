@@ -523,44 +523,462 @@
     <script>
         // DRINK DATA - Add all your drinks from the Discord bot here
         const drinkRecipes = {
-            'polynesian-pearl': {
-                name: 'Polynesian Pearl',
-                ingredients: ['0.5 oz cinnamon syrup (2 pumps)', '3 oz POG juice', '1 oz Grand Marnier', '1.5 oz RumChata'],
-                category: 'Tiki Classics'
-            },
-            'classic-mai-tai': {
-                name: 'Classic Mai Tai',
-                ingredients: ['1 oz white rum', '1 oz dark rum', '1 oz lime juice', '0.75 oz orgeat syrup', '0.5 oz Grand Marnier', 'garnish with lime wheel and mint sprig'],
-                category: 'Tiki Essentials'
-            },
-            'zombie-classic': {
-                name: 'Zombie (Classic)',
-                ingredients: ['1.5 oz Jamaican rum', '1.5 oz Puerto Rico rum', '1 oz 151 proof demerara rum', '0.75 oz lime juice', '0.5 oz grapefruit juice', '0.25 oz cinnamon syrup', '0.5 oz falernum', '1 tsp grenadine', '1 barspoon absinthe', '1 dash Angostura bitters'],
-                category: 'Tiki Essentials'
-            },
-            'painkiller': {
-                name: 'Painkiller',
-                ingredients: ['2 oz dark rum', '4 oz pineapple juice', '1 oz orange juice', '1 oz cream of coconut', 'garnish with nutmeg and orange slice'],
-                category: 'Tiki Essentials'
-            },
-            'pina-colada': {
-                name: 'Piña Colada',
-                ingredients: ['1.5 oz white rum', '1 oz aged rum', '3 oz pineapple juice', '1.5 oz cream of coconut', '0.5 oz lime juice', 'blend with ice, garnish with pineapple'],
-                category: 'Tiki Essentials'
-            },
-            'manhattan-enhanced': {
-                name: 'Manhattan (Enhanced)',
-                ingredients: ['2 oz rye or bourbon', '1 oz sweet vermouth', '1 dash Angostura bitters', '1 dash orange bitters', 'stir with ice until chilled', 'strain into chilled coupe', 'garnish with amarena cherry or lemon twist'],
-                category: 'Bitters Classics'
-            },
-            'old-fashioned-enhanced': {
-                name: 'Old Fashioned (Enhanced)',
-                ingredients: ['2 oz bourbon or rye', '0.25 oz simple syrup', '3 dashes Angostura bitters', '1 dash orange bitters', 'stir with ice', 'strain over large cube', 'garnish with orange twist'],
-                category: 'Bitters Classics'
-            }
-            // ADD MORE DRINKS FROM YOUR DOCUMENT HERE
-        };
-
+         const drinkRecipes = {
+    'polynesian-pearl': {
+        name: 'Polynesian Pearl',
+        ingredients: [
+            '0.5 oz cinnamon syrup (2 pumps)',
+            '3 oz POG juice',
+            '1 oz Grand Marnier',
+            '1.5 oz RumChata'
+        ],
+        category: 'Tiki Classics'
+    },
+    'nautilus': {
+        name: 'Nautilus',
+        ingredients: [
+            '1 oz lime juice',
+            '1 oz lemon juice',
+            '1 oz agave nectar (4 pumps)',
+            '1 oz falernum syrup (4 pumps)',
+            '3 oz POG juice',
+            '1 oz Combier Creme de Peche',
+            '2 oz Appleton Estate Reserve rum',
+            '2 oz Barbancourt Pango Rhum',
+            '5 dashes bitters'
+        ],
+        category: 'Tiki Classics'
+    },
+    'uh-oa': {
+        name: 'Uh-Oa!',
+        ingredients: [
+            '0.5 oz lime juice',
+            '1 oz cinnamon syrup (4 pumps)',
+            '2 oz grapefruit juice',
+            '4 oz gorilla grog',
+            '2 oz Bacardi rum',
+            '2 oz Myers\'s Original Dark rum'
+        ],
+        category: 'Tiki Classics'
+    },
+    'castaway-crush': {
+        name: 'Castaway Crush',
+        ingredients: [
+            '1 oz lime juice',
+            '3 pineapple cubes',
+            '0.5 oz cinnamon syrup (2 pumps)',
+            '0.5 oz Coco Reàl cream of coconut',
+            '2 oz Leblon Cachaca'
+        ],
+        category: 'Tiki Classics'
+    },
+    'krakatoa-punch': {
+        name: 'Krakatoa Punch',
+        ingredients: [
+            '0.25 oz hibiscus grenadine syrup (1 pump)',
+            '0.5 oz orgeat syrup (2 pumps)',
+            '3 oz gorilla grog',
+            '1 oz Sailor Jerry rum',
+            '1 oz Pyrat XO rum'
+        ],
+        category: 'Tiki Classics'
+    },
+    'hippopotmai-tai': {
+        name: 'HippopotoMai-Tai',
+        ingredients: [
+            '1 oz lime juice',
+            '0.5 oz agave nectar (2 pumps)',
+            '0.5 oz orgeat syrup (2 pumps)',
+            '0.5 oz Orange Curaçao',
+            '1 oz Coruba Dark rum',
+            '1 oz Bacardi rum'
+        ],
+        category: 'Tiki Classics'
+    },
+    'rositas-margarita': {
+        name: 'Rosita\'s Margarita',
+        ingredients: [
+            '1 oz lime',
+            '0.5 oz agave nectar (2 pumps)',
+            '0.5 oz falernum syrup (2 pumps)',
+            '0.5 oz Orange Curaçao',
+            '2 oz Casamigos tequila'
+        ],
+        category: 'Tiki Classics'
+    },
+    'shrunken-zombie-head': {
+        name: 'Shrunken Zombie Head',
+        ingredients: [
+            '3 oz zombie batch',
+            '0.75 oz Bacardi 8 rum',
+            '0.75 oz Appleton rum',
+            '0.5 oz Gosling 151 rum'
+        ],
+        category: 'Tiki Classics'
+    },
+    'tahitian-torch': {
+        name: 'Tahitian Torch',
+        ingredients: [
+            '1 oz lime juice',
+            '1 oz red passion fruit syrup (4 pumps)',
+            '3 oz POG juice',
+            '2 oz ByeJoe Dragon Fire'
+        ],
+        category: 'Tiki Classics'
+    },
+    'mosquito-mojito': {
+        name: 'Mosquito Mojito',
+        ingredients: [
+            '6 fresh mint leaves',
+            '1 oz lime juice',
+            '0.5 oz falernum syrup (2 pumps)',
+            '0.5 oz agave nectar (2 pumps)',
+            '2 oz Bacardi Dragon Berry rum',
+            'top with soda water'
+        ],
+        category: 'Tiki Classics'
+    },
+    'dark-tropical-stormy': {
+        name: 'Dark & Tropical Stormy',
+        ingredients: [
+            '0.5 oz lime juice',
+            '0.5 oz falernum syrup (2 pumps)',
+            '3 oz ginger beer',
+            '1.5 oz Gosling\'s Black Seal rum'
+        ],
+        category: 'Tiki Classics'
+    },
+    'tiki-rum': {
+        name: 'Tiki, Tiki, Tiki, Tiki, Tiki Rum',
+        ingredients: [
+            '0.5 oz orange juice',
+            '2 oz pineapple juice',
+            '1 oz Coco Reàl cream of coconut',
+            '1.5 oz Pyrat XO rum'
+        ],
+        category: 'Tiki Classics'
+    },
+    'shipwreck-on-the-rocks': {
+        name: 'Shipwreck on the Rocks',
+        ingredients: [
+            '4 lemon wedges (muddled)',
+            '4 fresh mint leaves (muddled)',
+            '2 oz Maker\'s Mark bourbon',
+            '0.5 oz agave nectar (2 pumps)'
+        ],
+        category: 'Tiki Classics'
+    },
+    'angolada': {
+        name: 'Angolada',
+        ingredients: [
+            '1.5 oz Angostura bitters',
+            '0.5 oz Smith & Cross Navy Strength rum',
+            '2 oz pineapple juice',
+            '1.5 oz Coco Reàl cream of coconut',
+            '1 oz lime juice',
+            'garnish w/orange slice, pineapple leaves, nutmeg'
+        ],
+        category: 'New Drinks'
+    },
+    'zambezi-sour': {
+        name: 'Zambezi Sour',
+        ingredients: [
+            '1 oz white grapefruit juice',
+            '0.5 oz fresh lime juice',
+            '0.5 oz falernum syrup (2 pumps)',
+            '0.25 oz Turbinado simple syrup (1 pump)',
+            '2 oz bourbon'
+        ],
+        category: 'New Drinks'
+    },
+    'pago-pago-cocktail': {
+        name: 'Pago Pago Cocktail',
+        ingredients: [
+            '3 oz Myers\'s Original Dark rum',
+            '1 tsp White Creme de Cacao',
+            '1 tsp Yellow Chartreuse',
+            '1 oz lime juice',
+            '1 oz pineapple juice'
+        ],
+        category: 'New Drinks'
+    },
+    'tropical-snowstorm': {
+        name: 'Tropical Snowstorm',
+        ingredients: [
+            '1.5 oz Jack Daniel\'s',
+            '0.5 oz Parrot Bay Coconut rum',
+            '1 oz Coco Reàl cream of coconut',
+            '0.25 oz falernum syrup (1 pump)',
+            '0.25 oz cinnamon syrup (1 pump)',
+            '0.25 oz orgeat syrup (1 pump)',
+            'rim glass w/toasted coconut, garnish w/cinnamon stick and candy cane'
+        ],
+        category: 'Seasonal'
+    },
+    'sams-slay-ride': {
+        name: 'Sam\'s Slay Ride',
+        ingredients: [
+            '1 oz Jack Daniel\'s Tennessee Honey whiskey',
+            '0.5 oz orange-flavored liqueur',
+            '0.75 oz ginger liqueur',
+            '0.75 oz lemon juice',
+            '1 oz gorilla grog',
+            '0.25 oz cinnamon syrup (1 pump)'
+        ],
+        category: 'Seasonal'
+    },
+    'lapu-lapu': {
+        name: 'Lapu Lapu',
+        ingredients: [
+            '1.25 oz Myers\'s Dark rum',
+            '0.5 oz triple sec',
+            'fill with scorpion mix',
+            'top with 0.5 oz 151 rum',
+            'garnish w/cherry umbrella'
+        ],
+        category: 'Resort Classics'
+    },
+    'malibu-macaw': {
+        name: 'Malibu Macaw',
+        ingredients: [
+            '1 oz Parrot Bay Coconut rum',
+            '1 oz Midori Melon liquor',
+            'fill with pineapple juice',
+            'top with 1 oz cranberry juice',
+            'garnish w/pineapple cherry umbrella'
+        ],
+        category: 'Resort Classics'
+    },
+    'backscratcher': {
+        name: 'Backscratcher',
+        ingredients: [
+            '0.75 oz Myers\'s Dark rum',
+            '0.75 oz Bacardi Silver rum',
+            'fill with POG juice',
+            'top with 0.5 oz Jack Daniel\'s',
+            'garnish w/orange cherry umbrella and backscratcher'
+        ],
+        category: 'Resort Classics'
+    },
+    'aku-aku': {
+        name: 'Aku Aku (Inspired by Missionary\'s Downfall)',
+        ingredients: [
+            '5 1" cubes of fresh pineapple',
+            '8 mint leaves',
+            '1 oz fresh Lime juice',
+            '0.5 oz SC Demerara Syrup',
+            '0.5 oz peach liqueur',
+            '1.5 oz blended lightly aged rum',
+            'garnish with mint leaf or small cluster of mint sprigs'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'island-sunset': {
+        name: 'Island Sunset (frozen)',
+        ingredients: [
+            '0.5 oz Seven Tiki rum',
+            '0.5 oz Peach Schnapps',
+            '0.5 oz Midori Melon liquor',
+            '0.5 oz Parrot Bay Coconut rum',
+            'fill with POG juice concentrate',
+            'garnish w/orange cherry umbrella'
+        ],
+        category: 'Resort Classics'
+    },
+    'dead-reckoning': {
+        name: 'Dead Reckoning',
+        ingredients: [
+            '1.5 oz blended aged rum',
+            '0.5 oz vanilla-infused cognac',
+            '0.75 oz lime juice',
+            '0.5 oz pineapple juice',
+            '0.25 oz maple syrup',
+            '0.25 oz orgeat syrup',
+            'top with soda water',
+            'garnish with lime wheel'
+        ],
+        category: 'Smuggler\'s Cove'
+    },
+    'rum-fruit-cup': {
+        name: 'Rum Fruit Cup',
+        ingredients: [
+            '5/6 oz Light Gold rum',
+            '5/6 oz orange curacao liqueur',
+            '5/6 oz Strucchi rosso Vermouth',
+            '2 dash Angostura Aromatic bitters',
+            '1 2/3 oz Thomas Henry Ginger Ale',
+            '1 2/3 oz Cola'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'suffering-bastard': {
+        name: 'Suffering Bastard',
+        ingredients: [
+            '1 oz Remy VSOP cognac',
+            '1 oz Haymans London Dry Gin',
+            '2/3 oz Lime cordial (sweetened lime juice)',
+            '1/3 oz lime juice',
+            '3 dash Angostura Aromatic bitters',
+            '3 1/3 oz Thomas Henry Ginger Beer'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'classic-mai-tai': {
+        name: 'Classic Mai Tai',
+        ingredients: [
+            '1 oz white rum',
+            '1 oz dark rum',
+            '1 oz lime juice',
+            '0.75 oz orgeat syrup',
+            '0.5 oz Grand Marnier',
+            'garnish with lime wheel and mint sprig'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'zombie-classic': {
+        name: 'Zombie (Classic)',
+        ingredients: [
+            '1.5 oz Jamaican rum',
+            '1.5 oz Puerto Rico rum',
+            '1 oz 151 proof demerara rum',
+            '0.75 oz lime juice',
+            '0.5 oz grapefruit juice',
+            '0.25 oz cinnamon syrup',
+            '0.5 oz falernum',
+            '1 tsp grenadine',
+            '1 barspoon absinthe',
+            '1 dash Angostura bitters'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'hurricane': {
+        name: 'Hurricane',
+        ingredients: [
+            '1 oz light rum',
+            '1 oz dark rum',
+            '0.75 oz lemon juice',
+            '0.5 oz passion fruit syrup',
+            '0.25 oz Cointreau',
+            'garnish with orange slice and cherry'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'painkiller': {
+        name: 'Painkiller',
+        ingredients: [
+            '2 oz dark rum',
+            '4 oz pineapple juice',
+            '1 oz orange juice',
+            '1 oz cream of coconut',
+            'garnish with nutmeg and orange slice'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'pina-colada': {
+        name: 'Piña Colada',
+        ingredients: [
+            '1.5 oz white rum',
+            '1 oz aged rum',
+            '3 oz pineapple juice',
+            '1.5 oz cream of coconut',
+            '0.5 oz lime juice',
+            'blend with ice, garnish with pineapple'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'bahama-mama': {
+        name: 'Bahama Mama',
+        ingredients: [
+            '1 oz white rum',
+            '1 oz dark rum',
+            '0.5 oz coconut rum',
+            '0.5 oz coffee liqueur',
+            '3 oz pineapple juice',
+            '1 oz orange juice',
+            '0.5 oz lime juice',
+            'splash of grenadine'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'scorpion': {
+        name: 'Scorpion',
+        ingredients: [
+            '1.5 oz light rum',
+            '0.75 oz cognac',
+            '2 oz orange juice',
+            '1 oz lemon juice',
+            '0.5 oz orgeat syrup',
+            'garnish with orange slice and cherry'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'jungle-bird': {
+        name: 'Jungle Bird',
+        ingredients: [
+            '2 oz aged Jamaican rum',
+            '0.75 oz lime juice',
+            '0.5 oz pineapple juice',
+            '0.25 oz maraschino liqueur',
+            '0.25 oz Campari',
+            'garnish with pineapple wedge'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'fog-cutter': {
+        name: 'Fog Cutter',
+        ingredients: [
+            '1.5 oz aged rum',
+            '0.5 oz gin',
+            '0.5 oz cognac',
+            '2 oz orange juice',
+            '1 oz lemon juice',
+            '0.5 oz orgeat syrup',
+            '0.5 oz dry sherry (float)',
+            'garnish with mint sprig'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'navy-grog': {
+        name: 'Navy Grog',
+        ingredients: [
+            '1 oz light rum',
+            '1 oz dark rum',
+            '1 oz demerara rum',
+            '0.75 oz lime juice',
+            '0.75 oz grapefruit juice',
+            '0.5 oz honey syrup',
+            'serve over crushed ice'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'rum-runner': {
+        name: 'Rum Runner',
+        ingredients: [
+            '1 oz light rum',
+            '1 oz dark rum',
+            '0.5 oz banana liqueur',
+            '0.5 oz blackberry liqueur',
+            '2 oz pineapple juice',
+            '2 oz orange juice',
+            '0.5 oz grenadine',
+            'splash of lime juice'
+        ],
+        category: 'Tiki Essentials'
+    },
+    'pearl-diver': {
+        name: 'Pearl Diver',
+        ingredients: [
+            '1.5 oz aged rum',
+            '0.5 oz navy strength rum',
+            '0.75 oz lime juice',
+            '0.5 oz orange juice',
+            '0.5 oz honey mix',
+            '0.25 oz butter and vanilla mix',
+            'garnish with pearl onion'
+        ],
+        category: 'Tiki Essentials'
+    },
+   
         const baseMixes = {
             'pog-juice': {
                 name: 'POG Juice',
