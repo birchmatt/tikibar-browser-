@@ -478,6 +478,14 @@
                         <option>Modern Tiki</option>
                         <option>Tiki Essentials</option>
                         <option>Bitters Classics</option>
+                        <option>New Drinks</option>
+                        <option>Seasonal</option>
+                        <option>Resort Classics</option>
+                        <option>Smuggler's Cove</option>
+                        <option>Caribbean Classics</option>
+                        <option>Prohibition Era</option>
+                        <option>Italian Classics</option>
+                        <option>Modern Bitters</option>
                         <option>Custom</option>
                     </select>
                 </div>
@@ -521,7 +529,7 @@
     </div>
 
     <script>
-        // DRINK DATA - Fixed syntax error by removing duplicate const declaration
+        // COMPLETE DRINK DATABASE - Now includes ALL drinks from both sources plus new additions
         const drinkRecipes = {
             'polynesian-pearl': {
                 name: 'Polynesian Pearl',
@@ -676,6 +684,19 @@
                     '1.5 oz Coco Reàl cream of coconut',
                     '1 oz lime juice',
                     'garnish w/orange slice, pineapple leaves, nutmeg'
+                ],
+                category: 'New Drinks'
+            },
+            'viktor-laszlo': {
+                name: 'Viktor Laszlo',
+                ingredients: [
+                    '1.5 oz Myers Original Dark Rum',
+                    '1 oz Brandy',
+                    '0.75 oz Lime juice',
+                    '0.75 oz Orange Cordial',
+                    '0.75 oz Unicum Szilva',
+                    '0.5 oz Grenadine',
+                    'Dash of Angostura Bitters, and a Splash of Seltzer'
                 ],
                 category: 'New Drinks'
             },
@@ -977,6 +998,362 @@
                 ],
                 category: 'Tiki Essentials'
             },
+            'test-pilot': {
+                name: 'Test Pilot',
+                ingredients: [
+                    '0.75 oz Puerto Rican rum',
+                    '0.75 oz Jamaican rum',
+                    '0.5 oz overproof rum',
+                    '0.75 oz lime juice',
+                    '0.5 oz falernum',
+                    '0.25 oz absinthe',
+                    '1 dash Angostura bitters'
+                ],
+                category: 'Tiki Essentials'
+            },
+            'saturn': {
+                name: 'Saturn',
+                ingredients: [
+                    '1.5 oz gin',
+                    '0.25 oz falernum',
+                    '0.25 oz passion fruit syrup',
+                    '0.25 oz orgeat syrup',
+                    '0.75 oz lemon juice',
+                    'garnish with lemon wheel'
+                ],
+                category: 'Tiki Essentials'
+            },
+            'three-dots-and-dash': {
+                name: 'Three Dots and a Dash',
+                ingredients: [
+                    '1.5 oz aged rum',
+                    '0.5 oz rhum agricole',
+                    '0.5 oz honey syrup',
+                    '0.5 oz falernum',
+                    '0.75 oz lime juice',
+                    '0.75 oz orange juice',
+                    '1 dash Angostura bitters',
+                    'garnish with three cherries and pineapple spear'
+                ],
+                category: 'Tiki Essentials'
+            },
+            'lost-lake': {
+                name: 'Lost Lake',
+                ingredients: [
+                    '2 oz aged Jamaican rum',
+                    '0.75 oz lime juice',
+                    '0.75 oz passion fruit syrup',
+                    '0.5 oz pineapple juice',
+                    '0.25 oz maraschino liqueur',
+                    '0.25 oz Campari',
+                    'garnish with lime wheel'
+                ],
+                category: 'Modern Tiki'
+            },
+            'sidewinders-fang': {
+                name: 'Sidewinder\'s Fang',
+                ingredients: [
+                    '1 oz aged rum',
+                    '1 oz gold rum',
+                    '0.75 oz lime juice',
+                    '0.5 oz orange juice',
+                    '0.5 oz passion fruit syrup',
+                    '0.25 oz orgeat syrup',
+                    '2 dashes Angostura bitters'
+                ],
+                category: 'Modern Tiki'
+            },
+            'cosa-nostra-2': {
+                name: 'Cosa Nostra #2',
+                ingredients: [
+                    '1.5 oz Amaro Averna',
+                    '1 oz light rum (Plantation 3 Star)',
+                    '0.75 oz fresh lemon juice',
+                    '1 dash Angostura bitters',
+                    '2 oz ginger ale',
+                    'combine all except ginger ale in tall glass',
+                    'add ice, top with ginger ale',
+                    'garnish with lemon twist'
+                ],
+                category: 'Smuggler\'s Cove'
+            },
+            'golden-gun': {
+                name: 'Golden Gun',
+                ingredients: [
+                    '1 oz blended lightly aged rum',
+                    '1 oz blended aged rum',
+                    '0.5 oz apricot liqueur',
+                    '0.5 oz demerara syrup',
+                    '0.5 oz fresh grapefruit juice',
+                    '0.75 oz fresh lime juice',
+                    '2 dashes Angostura bitters',
+                    'shake with ice, strain over crushed ice',
+                    'garnish with mint sprig and dehydrated orange'
+                ],
+                category: 'Smuggler\'s Cove'
+            },
+            'cosa-nostra-original': {
+                name: 'Cosa Nostra (Original)',
+                ingredients: [
+                    '1.5 oz bourbon',
+                    '0.25 oz simple syrup',
+                    '1 barspoon Campari',
+                    '1 barspoon Rabarbaro Zucca',
+                    '2 dashes Fernet-Branca',
+                    'stir with ice, strain over large cube',
+                    'garnish with lemon twist'
+                ],
+                category: 'Italian Classics'
+            },
+            'trade-winds': {
+                name: 'Trade Winds',
+                ingredients: [
+                    '1.5 oz aged rum',
+                    '0.5 oz gold rum',
+                    '0.75 oz lime juice',
+                    '0.5 oz orange juice',
+                    '0.5 oz passion fruit syrup',
+                    '0.25 oz orgeat syrup',
+                    '1 dash Angostura bitters',
+                    'shake with ice, strain over crushed ice'
+                ],
+                category: 'Classic Tiki'
+            },
+            'naked-ape': {
+                name: 'The Naked Ape',
+                ingredients: [
+                    '1.5 oz overproof rum',
+                    '0.5 oz banana liqueur',
+                    '0.75 oz lime juice',
+                    '0.5 oz orgeat syrup',
+                    '0.25 oz vanilla syrup',
+                    'blend with crushed ice',
+                    'garnish with banana and mint'
+                ],
+                category: 'Modern Tiki'
+            },
+            'barbados-rum-punch': {
+                name: 'Barbados Rum Punch',
+                ingredients: [
+                    '2 oz Barbados rum',
+                    '1 oz fresh lime juice',
+                    '2 oz simple syrup',
+                    '3 dashes Angostura bitters',
+                    'pinch of fresh grated nutmeg',
+                    'serve over ice',
+                    'stir gently'
+                ],
+                category: 'Caribbean Classics'
+            },
+            'black-magic': {
+                name: 'The Black Magic',
+                ingredients: [
+                    '1.5 oz dark rum',
+                    '0.5 oz black rum',
+                    '0.75 oz lime juice',
+                    '0.5 oz simple syrup',
+                    '0.25 oz coffee liqueur',
+                    '2 dashes chocolate bitters',
+                    'shake with ice, strain over rocks'
+                ],
+                category: 'Modern Tiki'
+            },
+            'expedition': {
+                name: 'The Expedition',
+                ingredients: [
+                    '1 oz aged rum',
+                    '1 oz rhum agricole',
+                    '0.75 oz lime juice',
+                    '0.5 oz honey syrup',
+                    '0.25 oz yellow Chartreuse',
+                    '0.25 oz allspice dram',
+                    'shake with ice, strain over crushed ice'
+                ],
+                category: 'Modern Tiki'
+            },
+            'mastodon': {
+                name: 'The Mastodon',
+                ingredients: [
+                    '2 oz overproof rum',
+                    '0.5 oz falernum',
+                    '0.75 oz lime juice',
+                    '0.5 oz grapefruit juice',
+                    '0.25 oz orgeat syrup',
+                    'shake with ice, strain over crushed ice',
+                    'garnish with lime wheel'
+                ],
+                category: 'Modern Tiki'
+            },
+            'port-light': {
+                name: 'Port Light',
+                ingredients: [
+                    '1.5 oz aged rum',
+                    '0.5 oz tawny port',
+                    '0.75 oz lime juice',
+                    '0.5 oz passion fruit syrup',
+                    '0.25 oz orgeat syrup',
+                    'shake with ice, strain over ice',
+                    'garnish with lime wheel'
+                ],
+                category: 'Classic Tiki'
+            },
+            'twelve-mile-limit': {
+                name: 'Twelve Mile Limit',
+                ingredients: [
+                    '1 oz white rum',
+                    '0.5 oz rye whiskey',
+                    '0.5 oz cognac',
+                    '0.75 oz lime juice',
+                    '0.5 oz grenadine',
+                    'shake with ice, strain into coupe',
+                    'garnish with lime wheel'
+                ],
+                category: 'Prohibition Era'
+            },
+            'cobra-fang': {
+                name: 'Cobra\'s Fang',
+                ingredients: [
+                    '1.5 oz aged rum',
+                    '0.5 oz falernum',
+                    '0.5 oz passion fruit syrup',
+                    '0.75 oz lime juice',
+                    '0.75 oz orange juice',
+                    '1 dash Angostura bitters',
+                    'garnish with lime wheel'
+                ],
+                category: 'Modern Tiki'
+            },
+            'shady-lane': {
+                name: 'Shady Lane',
+                ingredients: [
+                    '2 oz gin',
+                    '0.75 oz Lillet Rouge',
+                    '0.5 oz blackberry-lime syrup',
+                    '0.25 oz fresh lime juice',
+                    '6 shiso leaves (muddled)',
+                    '2 dashes chocolate bitters',
+                    'muddle shiso, shake with ice',
+                    'double strain into coupe',
+                    'garnish with shiso leaf'
+                ],
+                category: 'Bitters Classics'
+            },
+            'manhattan-enhanced': {
+                name: 'Manhattan (Enhanced)',
+                ingredients: [
+                    '2 oz rye or bourbon',
+                    '1 oz sweet vermouth',
+                    '1 dash Angostura bitters',
+                    '1 dash orange bitters',
+                    'stir with ice until chilled',
+                    'strain into chilled coupe',
+                    'garnish with amarena cherry or lemon twist'
+                ],
+                category: 'Bitters Classics'
+            },
+            'martinez': {
+                name: 'Martinez',
+                ingredients: [
+                    '2 oz gin',
+                    '1 oz sweet vermouth',
+                    '0.25 oz maraschino liqueur',
+                    '2 dashes orange bitters',
+                    'stir with ice',
+                    'strain into chilled coupe',
+                    'garnish with lemon twist'
+                ],
+                category: 'Bitters Classics'
+            },
+            'trinidad-sour': {
+                name: 'Trinidad Sour',
+                ingredients: [
+                    '1 oz Angostura bitters',
+                    '1 oz orgeat syrup',
+                    '0.75 oz fresh lemon juice',
+                    '0.5 oz rye whiskey',
+                    'shake with ice',
+                    'double strain into coupe',
+                    'garnish with lemon twist'
+                ],
+                category: 'Modern Bitters'
+            },
+            'paper-plane': {
+                name: 'Paper Plane',
+                ingredients: [
+                    '0.75 oz bourbon',
+                    '0.75 oz Amaro Nonino',
+                    '0.75 oz Aperol',
+                    '0.75 oz fresh lemon juice',
+                    'shake with ice',
+                    'strain into coupe',
+                    'garnish with lemon twist'
+                ],
+                category: 'Modern Bitters'
+            },
+            'pink-lady': {
+                name: 'Pink Lady',
+                ingredients: [
+                    '2 oz gin',
+                    '0.75 oz fresh lemon juice',
+                    '0.5 oz grenadine',
+                    '1 egg white',
+                    '2 dashes orange bitters',
+                    'dry shake, then shake with ice',
+                    'strain into coupe'
+                ],
+                category: 'Bitters Classics'
+            },
+            'sazerac': {
+                name: 'Sazerac',
+                ingredients: [
+                    '2 oz rye whiskey',
+                    '0.25 oz simple syrup',
+                    '3 dashes Peychaud\'s bitters',
+                    'absinthe rinse',
+                    'stir with ice, strain into rinsed glass',
+                    'garnish with lemon twist (express and discard)'
+                ],
+                category: 'Bitters Classics'
+            },
+            'champagne-cocktail': {
+                name: 'Champagne Cocktail',
+                ingredients: [
+                    '1 sugar cube',
+                    '3 dashes Angostura bitters',
+                    '4 oz champagne or sparkling wine',
+                    '0.25 oz cognac (optional)',
+                    'soak sugar cube with bitters',
+                    'add to flute, top with champagne',
+                    'garnish with orange twist'
+                ],
+                category: 'Bitters Classics'
+            },
+            'old-fashioned-enhanced': {
+                name: 'Old Fashioned (Enhanced)',
+                ingredients: [
+                    '2 oz bourbon or rye',
+                    '0.25 oz simple syrup',
+                    '3 dashes Angostura bitters',
+                    '1 dash orange bitters',
+                    'stir with ice',
+                    'strain over large cube',
+                    'garnish with orange twist'
+                ],
+                category: 'Bitters Classics'
+            },
+            'toronto': {
+                name: 'Toronto',
+                ingredients: [
+                    '2 oz rye whiskey',
+                    '0.25 oz Fernet-Branca',
+                    '0.25 oz simple syrup',
+                    '2 dashes Angostura bitters',
+                    'stir with ice',
+                    'strain into chilled coupe',
+                    'garnish with orange twist'
+                ],
+                category: 'Modern Bitters'
+            },
             'vieux-carre': {
                 name: 'Vieux Carré',
                 ingredients: [
@@ -1003,6 +1380,65 @@
                     'garnish with orange twist'
                 ],
                 category: 'Bitters Classics'
+            },
+            // NEW DRINKS ADDED BY USER
+            'kuaioo': {
+                name: 'The Kuai\'o\'o',
+                ingredients: [
+                    '1 oz Lightly Aged Rum',
+                    '1 oz Planteray Stiggins\' Fancy Pineapple Rum',
+                    '0.75 oz Lime',
+                    '0.75 oz Passionfruit',
+                    '1 oz Cream of Coconut',
+                    '0.5 oz Select'
+                ],
+                category: 'Modern Tiki'
+            },
+            'exit-visa': {
+                name: 'Exit Visa',
+                ingredients: [
+                    '1 oz Lightly Aged Rum',
+                    '1 oz Chilean Pisco',
+                    '0.5 oz Lime',
+                    '0.25 oz Passionfruit',
+                    '0.25 oz Banana Liqueur',
+                    'Dash of Tiki Bitters',
+                    '3-4 Mint Leaves'
+                ],
+                category: 'Modern Tiki'
+            },
+            'seasick-trader': {
+                name: 'Seasick Trader',
+                ingredients: [
+                    '1 oz Planteray Xaymaca Rum',
+                    '1 oz Planteray Cut & Dry Coconut Rum',
+                    '0.75 oz Lime',
+                    '0.5 oz Macadamia Nut Liqueur',
+                    '0.5 oz Orgeat',
+                    '0.5 oz Falernum'
+                ],
+                category: 'Modern Tiki'
+            },
+            'xenomorph': {
+                name: 'Xenomorph!',
+                ingredients: [
+                    '1.5 oz Lightly Aged Rum',
+                    '0.75 oz Yuzu',
+                    '0.5 oz Lychee Syrup',
+                    '0.5 oz Midori',
+                    '1 oz Cream of Coconut'
+                ],
+                category: 'Modern Tiki'
+            },
+            'heptapod': {
+                name: 'Heptapod?',
+                ingredients: [
+                    '2 oz Aged Rum',
+                    '1 oz Lemon',
+                    '0.75 oz Orgeat',
+                    '0.25 oz Ube'
+                ],
+                category: 'Modern Tiki'
             }
         };
    
